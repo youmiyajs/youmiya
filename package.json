@@ -1,0 +1,61 @@
+{
+  "name": "youmiya",
+  "description": "A dependency injection framework.",
+  "version": "0.1.0",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "module": "./dist/es/index.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "modern dev -c config/modern.config.ts",
+    "build": "modern build -c config/modern.config.ts",
+    "build:watch": "modern build -w -c config/modern.config.ts",
+    "reset": "rimraf ./**/node_modules",
+    "lint": "modern lint -c config/modern.config.ts",
+    "change": "modern change -c config/modern.config.ts",
+    "bump": "modern bump -c config/modern.config.ts",
+    "pre": "modern pre -c config/modern.config.ts",
+    "change-status": "modern change-status -c config/modern.config.ts",
+    "gen-release-note": "modern gen-release-note -c config/modern.config.ts",
+    "release": "modern release -c config/modern.config.ts",
+    "new": "modern new -c config/modern.config.ts",
+    "upgrade": "modern upgrade -c config/modern.config.ts",
+    "test": "vitest -c config/vitest.config.mts",
+    "test:run": "vitest run -c config/vitest.config.mts --coverage"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "node --max_old_space_size=8192 ./node_modules/eslint/bin/eslint.js --fix --color --cache --quiet"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "dist/"
+  ],
+  "devDependencies": {
+    "@abraham/reflection": "^0.12.0",
+    "@modern-js/eslint-config": "2.49.2",
+    "@modern-js/module-tools": "2.49.2",
+    "@types/node": "~16.11.7",
+    "@vitest/coverage-v8": "^1.6.0",
+    "husky": "~8.0.1",
+    "lint-staged": "~13.1.0",
+    "prettier": "~2.8.1",
+    "reflect-metadata": "^0.2.2",
+    "rimraf": "~3.0.2",
+    "typescript": "~5.0.4",
+    "vite-plugin-swc-transform": "^0.3.1",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
+  },
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
