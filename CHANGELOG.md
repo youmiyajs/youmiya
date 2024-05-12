@@ -1,5 +1,11 @@
 # youmiya
 
+## 0.1.3
+
+### Patch Changes
+
+- 902949d: redesign AsyncModule API and AsyncModuleLoader
+
 ## 0.1.2
 
 ### Patch Changes
