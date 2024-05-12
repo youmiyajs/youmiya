@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { RegistrationMap } from './RegistrationMap';
 import {
   IContainer,
@@ -6,14 +5,21 @@ import {
   ResolutionOptions,
   ResolutionContext,
 } from './types';
-import { getClassDescriptorsSet, isDisposable } from '@/utils';
 import {
-  AsyncModule,
+  getClassDescriptorsSet,
+  isDisposable,
+  isGlobalSingleton,
+  isScopedSingleton,
+} from '@/utils';
+import {
   Constructor,
   InjectionTokenInvalidError,
   InjectionTokenType,
   NoProviderFoundError,
   UnsupportedProviderError,
+  DECORATOR_BIND_TOKEN,
+  ProviderIdentifier,
+  isProviderIdentifier,
 } from '@/common';
 import {
   IProvider,
@@ -27,10 +33,10 @@ import {
   AsyncProvider,
 } from '@/providers';
 import {
-  DECORATOR_BIND_TOKEN,
-  ProviderIdentifier,
-  isProviderIdentifier,
-} from '@/common/InjectionToken';
+  AsyncModule,
+  createAsyncModuleLoader,
+  createLazyModuleLoader,
+} from '@/modules';
 
 export class Container implements IContainer {
   private readonly registration: RegistrationMap = new RegistrationMap();
@@ -190,9 +196,8 @@ export class Container implements IContainer {
     const shouldUseCache =
       cachedInstance &&
       (context.useCache ||
-        registration.options?.singleton === 'global' ||
-        (registration.options?.singleton === 'scoped' &&
-          context.container === this));
+        isGlobalSingleton(registration) ||
+        (isScopedSingleton(registration) && context.container === this));
 
     if (shouldUseCache && cachedInstance) {
       return cachedInstance;
@@ -293,42 +298,14 @@ export class Container implements IContainer {
       return localCached as object;
     };
 
-    return new Proxy(
-      {},
-      {
-        get(_, key: string | symbol, receiver) {
-          return Reflect.get(getModule(), key, receiver);
-        },
-        set(_, key: string | symbol, value: any, receiver) {
-          return Reflect.set(getModule(), key, value, receiver);
-        },
-        defineProperty(_, property, attributes) {
-          return Reflect.defineProperty(getModule(), property, attributes);
-        },
-        deleteProperty(_, p) {
-          return Reflect.deleteProperty(getModule(), p);
-        },
-        has(_, p) {
-          return Reflect.has(getModule(), p);
-        },
-        getOwnPropertyDescriptor(_, p) {
-          return Reflect.getOwnPropertyDescriptor(getModule(), p);
-        },
-        ownKeys(_) {
-          return Reflect.ownKeys(getModule());
-        },
-        setPrototypeOf(_, v) {
-          return Reflect.setPrototypeOf(getModule(), v);
-        },
-      },
-    ) as T;
+    return createLazyModuleLoader<T>(getModule);
   }
 
   private createAsyncModuleLoader<T>(
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ): AsyncModule<T> {
-    let loadPromise: Promise<T | T[] | undefined> | undefined;
+    let loadPromise: Promise<T | undefined> | undefined;
 
     const loadModule = () => {
       if (loadPromise) {
@@ -339,7 +316,9 @@ export class Container implements IContainer {
 
       loadPromise = provider
         .useAsync(context)
-        .then(constructor => this.resolve(constructor, context))
+        .then(
+          constructor => this.resolve(constructor, context) as T | undefined,
+        )
         .catch(err => {
           loadPromise = undefined;
           throw err;
@@ -348,23 +327,7 @@ export class Container implements IContainer {
       return loadPromise;
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return new Proxy(() => {}, {
-      apply() {
-        return loadModule();
-      },
-      get(_, key: string | symbol, receiver) {
-        return loadModule().then(module =>
-          Reflect.get(module as object, key, receiver),
-        );
-      },
-      set(_, key: string | symbol, value: any, receiver) {
-        loadModule().then(module =>
-          Reflect.set(module as object, key, value, receiver),
-        );
-        return true;
-      },
-    }) as AsyncModule<T>;
+    return createAsyncModuleLoader<T>(loadModule as () => Promise<object>);
   }
 
   public dispose(clearRegistration = false) {

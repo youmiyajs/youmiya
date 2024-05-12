@@ -1,6 +1,7 @@
-import { describe, expect, it, beforeEach, beforeAll } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
 
 import {
+  AsyncModule,
   InjectionTokenInvalidError,
   NoReflectMetadataSupportError,
   UnsupportedProviderError,
@@ -8,7 +9,7 @@ import {
   injectable,
   rootContainer,
 } from '../src';
-import { AsyncModule, NoProviderFoundError } from '@/common';
+import { NoProviderFoundError } from '@/common';
 
 describe('[Basic] test register & resolution features', () => {
   beforeEach(() => rootContainer.dispose(true));

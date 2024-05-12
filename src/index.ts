@@ -1,11 +1,15 @@
 export {
+  // injection token
   InjectionToken,
+  // errors
   UnsupportedProviderError,
   NoReflectMetadataSupportError,
   InjectionTokenInvalidError,
 } from './common';
 
-export type { AsyncModule, InjectionTokenType } from './common';
+// types
+export type { InjectionTokenType } from './common';
+export type { AsyncModule } from './modules';
 
 export * from './containers';
 export * from './providers';
