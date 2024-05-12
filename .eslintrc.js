@@ -6,5 +6,6 @@ module.exports = {
     'max-classes-per-file': ['off'],
 
     '@typescript-eslint/no-parameter-properties': ['off'],
+    '@typescript-eslint/method-signature-style': ['off'],
   },
 };

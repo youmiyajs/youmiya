@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { RegistrationMap } from './RegistrationMap';
 import {
   IContainer,
@@ -71,24 +72,40 @@ export class Container implements IContainer {
 
   public resolve<T>(
     token: InjectionTokenType<T>,
-    options?: ResolutionOptions<false, false>,
+    options?: ResolutionOptions<false, false, false>,
   ): T;
   public resolve<T>(
     token: InjectionTokenType<T>,
-    options?: ResolutionOptions<false, true>,
+    options?: ResolutionOptions<false, true, false>,
   ): T[];
   public resolve<T>(
     token: InjectionTokenType<T>,
-    options?: ResolutionOptions<true, false>,
+    options?: ResolutionOptions<true, false, false>,
   ): T | undefined;
   public resolve<T>(
     token: InjectionTokenType<T>,
-    options?: ResolutionOptions<true, true>,
+    options?: ResolutionOptions<true, true, false>,
   ): T[] | undefined;
   public resolve<T>(
     token: InjectionTokenType<T>,
+    options?: ResolutionOptions<false, false, true>,
+  ): AsyncModule<T>;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<false, true, true>,
+  ): AsyncModule<T>[];
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<true, false, true>,
+  ): AsyncModule<T> | undefined;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<true, true, true>,
+  ): AsyncModule<T>[] | undefined;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
     options?: ResolutionOptions,
-  ): T | T[] | undefined;
+  ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined;
 
   public resolve<T, Optional extends boolean, Multiple extends boolean>(
     token: InjectionTokenType<T>,
@@ -209,7 +226,7 @@ export class Container implements IContainer {
   private resolveProvider<T>(
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
-  ): T | T[] | AsyncModule<T> | undefined {
+  ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined {
     const { provider, options } = registration;
     const { lazyable = false } = options ?? {};
 
