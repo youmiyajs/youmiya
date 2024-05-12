@@ -27,6 +27,7 @@ import {
 import {
   DECORATOR_BIND_TOKEN,
   ProviderIdentifier,
+  isProviderIdentifier,
 } from '@/common/InjectionToken';
 
 export class Container implements IContainer {
@@ -49,9 +50,7 @@ export class Container implements IContainer {
       throw new InjectionTokenInvalidError(token);
     }
 
-    const registerToken = (token as any)[DECORATOR_BIND_TOKEN]
-      ? (token as ProviderIdentifier<T>)[DECORATOR_BIND_TOKEN]
-      : (token as InjectionTokenType<T>);
+    const registerToken = this.unwrapInjectionToken(token);
 
     const registration: ProviderRegistration<T> = {
       provider,
@@ -62,10 +61,14 @@ export class Container implements IContainer {
     return () => this.registration.unregister(registerToken, registration);
   }
 
-  public resolve<T, Optional extends boolean, Multiple extends boolean>(
-    token: InjectionTokenType<T>,
+  public resolve<
+    T,
+    Optional extends boolean = false,
+    Multiple extends boolean = false,
+  >(
+    token: InjectionTokenType<T> | ProviderIdentifier<T>,
     options?: ResolutionOptions<Optional, Multiple>,
-  ): any {
+  ) {
     const context: ResolutionContext = {
       container: this,
       resolveParent: true,
@@ -75,11 +78,20 @@ export class Container implements IContainer {
       ...options,
     };
 
-    return this.resolveImpl(token, context);
+    return this.resolveImpl(this.unwrapInjectionToken(token), context);
   }
 
   public fork(identifier: string): IContainer {
     return new Container(identifier, this);
+  }
+
+  private unwrapInjectionToken<T>(
+    token: InjectionTokenType<T> | ProviderIdentifier<T>,
+  ) {
+    if (isProviderIdentifier(token)) {
+      return token[DECORATOR_BIND_TOKEN];
+    }
+    return token;
   }
 
   private resolveImpl<T>(

@@ -87,7 +87,7 @@ interface IBar {
 const IBar = createProviderIdentifier<IBar>('Bar');
 
 class BarImpl implements IBar {
-  constructor(@IFoo private readonly foo: IFoo) {}
+  constructor(@IFoo() private readonly foo: IFoo) {}
 
   echo() {
     this.foo.echo();

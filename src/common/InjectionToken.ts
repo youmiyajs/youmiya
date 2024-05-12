@@ -29,6 +29,14 @@ export type InjectionTokenType<T = unknown> =
 
 export const DECORATOR_BIND_TOKEN = Symbol.for('DECORATOR_BIND_TOKEN');
 
-export type ProviderIdentifier<T> = (() => void) & {
+export type ProviderIdentifier<T> = (() => ParameterDecorator) & {
   [DECORATOR_BIND_TOKEN]: InjectionTokenType<T>;
+};
+
+export const isProviderIdentifier = (
+  target: unknown,
+): target is ProviderIdentifier<unknown> => {
+  return (
+    (target as ProviderIdentifier<unknown>)[DECORATOR_BIND_TOKEN] !== undefined
+  );
 };
