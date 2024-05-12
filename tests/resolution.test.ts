@@ -8,10 +8,10 @@ import {
   injectable,
   rootContainer,
 } from '../src';
-import { NoProviderFoundError } from '@/common';
+import { AsyncModule, NoProviderFoundError } from '@/common';
 
 describe('[Basic] test register & resolution features', () => {
-  beforeEach(() => rootContainer.dispose());
+  beforeEach(() => rootContainer.dispose(true));
 
   it('should register and resolve all providers (class, value, factory, token, async)', () => {
     class A {}
@@ -29,7 +29,7 @@ describe('[Basic] test register & resolution features', () => {
     expect(rootContainer.resolve('B')).toBe(B);
     expect(rootContainer.resolve('C')).toBe(C);
     expect(rootContainer.resolve('D')).toBeInstanceOf(A);
-    expect(rootContainer.resolve('E')()).toBeInstanceOf(Promise);
+    expect(rootContainer.resolve<AsyncModule<A>>('E')()).toBeInstanceOf(Promise);
   });
 
   it('should resolve and instantiate classes correctly', () => {
@@ -88,7 +88,7 @@ describe('[Basic] test register & resolution features', () => {
 });
 
 describe('[Basic] test scenes that should throw error', () => {
-  beforeEach(() => rootContainer.dispose());
+  beforeEach(() => rootContainer.dispose(true));
 
   it('should throw InjectionTokenInvalidError when resolve a invalid token', () => {
     class A {}

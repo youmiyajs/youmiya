@@ -43,9 +43,10 @@ export interface IContainer {
 
   fork: (identifier: string) => IContainer;
 
-  dispose: () => void;
+  dispose: (clearRegistration?: boolean) => void;
 }
 
 export type ResolutionContext = ResolutionOptions & {
   container: IContainer;
+  rootToken: InjectionTokenType<unknown>;
 };

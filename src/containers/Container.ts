@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { RegistrationMap } from './RegistrationMap';
 import {
   IContainer,
@@ -8,6 +9,7 @@ import {
 import { getClassDescriptorsSet, isDisposable } from '@/utils';
 import {
   AsyncModule,
+  Constructor,
   InjectionTokenInvalidError,
   InjectionTokenType,
   NoProviderFoundError,
@@ -79,23 +81,62 @@ export class Container implements IContainer {
   ): T[] | undefined;
   public resolve<T>(
     token: InjectionTokenType<T>,
-    options?: ResolutionContext,
+    options?: ResolutionOptions,
   ): T | T[] | undefined;
 
   public resolve<T, Optional extends boolean, Multiple extends boolean>(
     token: InjectionTokenType<T>,
     options?: ResolutionOptions<Optional, Multiple>,
   ): any {
+    const unwrappedToken = this.unwrapInjectionToken(token);
+
     const context: ResolutionContext = {
       container: this,
       resolveParent: true,
       useCache: true,
-      multiple: false,
-      optional: false,
+      rootToken: unwrappedToken,
       ...options,
     };
 
-    return this.resolveImpl(this.unwrapInjectionToken(token), context);
+    return this.resolveImpl(unwrappedToken, context);
+  }
+
+  public instatiate<T>(
+    constructor: Constructor<T>,
+    options?: ResolutionOptions<false, false>,
+  ): T;
+  public instatiate<T>(
+    constructor: Constructor<T>,
+    options?: ResolutionOptions<false, true>,
+  ): T[];
+  public instatiate<T>(
+    constructor: Constructor<T>,
+    options?: ResolutionOptions<true, false>,
+  ): T | undefined;
+  public instatiate<T>(
+    constructor: Constructor<T>,
+    options?: ResolutionOptions<true, true>,
+  ): T[] | undefined;
+  public instatiate<T, Optional extends boolean, Multiple extends boolean>(
+    constructor: Constructor<T>,
+    options?: ResolutionOptions<Optional, Multiple>,
+  ): ReturnType<Container['resolve']> {
+    const provide: NonNullable<ResolutionOptions['provide']> =
+      options?.provide ?? new Map();
+
+    provide.set(constructor, [
+      {
+        provider: { useClass: constructor },
+        options: {
+          singleton: false,
+        },
+      },
+    ]);
+
+    return this.resolve(constructor, {
+      ...options,
+      provide,
+    });
   }
 
   public fork(identifier: string): IContainer {
@@ -129,7 +170,10 @@ export class Container implements IContainer {
     }
 
     if (!context.multiple) {
-      return this.resolveSingleRegistration(registrations[0], context);
+      return this.resolveSingleRegistration(
+        registrations[registrations.length - 1],
+        context,
+      );
     }
 
     return registrations.map(registration =>
@@ -209,6 +253,7 @@ export class Container implements IContainer {
         descriptor.token,
         {
           ...descriptor.options,
+          ...descriptorSet.options[descriptor.index],
           ...context,
         },
       );
@@ -222,6 +267,7 @@ export class Container implements IContainer {
     descriptorSet.properties.forEach(descriptor => {
       (result as any)[descriptor.key] = this.resolve(descriptor.token, {
         ...descriptor.options,
+        ...descriptorSet.options[descriptor.key],
         ...context,
       });
     });
@@ -321,7 +367,7 @@ export class Container implements IContainer {
     }) as AsyncModule<T>;
   }
 
-  public dispose() {
+  public dispose(clearRegistration = false) {
     // dispose instances
     this.instanceMap.forEach(instance => {
       if (isDisposable(instance)) {
@@ -329,10 +375,13 @@ export class Container implements IContainer {
       }
     });
 
-    this.registration.clear();
+    // dispose registration
+    if (clearRegistration) {
+      this.registration.clear();
+    }
   }
 }
 
-export const ROOT_CONTAINER_IDENTIFIER = '__ROOT_CONTAINER__';
+const ROOT_CONTAINER_IDENTIFIER = '__ROOT_CONTAINER__';
 
 export const rootContainer = new Container(ROOT_CONTAINER_IDENTIFIER);
