@@ -61,14 +61,31 @@ export class Container implements IContainer {
     return () => this.registration.unregister(registerToken, registration);
   }
 
-  public resolve<
-    T,
-    Optional extends boolean = false,
-    Multiple extends boolean = false,
-  >(
-    token: InjectionTokenType<T> | ProviderIdentifier<T>,
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<false, false>,
+  ): T;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<false, true>,
+  ): T[];
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<true, false>,
+  ): T | undefined;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionOptions<true, true>,
+  ): T[] | undefined;
+  public resolve<T>(
+    token: InjectionTokenType<T>,
+    options?: ResolutionContext,
+  ): T | T[] | undefined;
+
+  public resolve<T, Optional extends boolean, Multiple extends boolean>(
+    token: InjectionTokenType<T>,
     options?: ResolutionOptions<Optional, Multiple>,
-  ) {
+  ): any {
     const context: ResolutionContext = {
       container: this,
       resolveParent: true,
@@ -85,9 +102,7 @@ export class Container implements IContainer {
     return new Container(identifier, this);
   }
 
-  private unwrapInjectionToken<T>(
-    token: InjectionTokenType<T> | ProviderIdentifier<T>,
-  ) {
+  private unwrapInjectionToken<T>(token: InjectionTokenType<T>) {
     if (isProviderIdentifier(token)) {
       return token[DECORATOR_BIND_TOKEN];
     }
@@ -97,7 +112,7 @@ export class Container implements IContainer {
   private resolveImpl<T>(
     token: InjectionTokenType<T>,
     context: ResolutionContext,
-  ): any {
+  ) {
     // get registrations in this container
     const registrations =
       context.provide?.get(token) || this.registration.get(token);
@@ -145,7 +160,7 @@ export class Container implements IContainer {
   private resolveProvider<T>(
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
-  ): T | T[] | AsyncModule<T> | null {
+  ): T | T[] | AsyncModule<T> | undefined {
     const { provider, options } = registration;
     const { lazyable = false } = options ?? {};
 
@@ -267,7 +282,7 @@ export class Container implements IContainer {
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ): AsyncModule<T> {
-    let loadPromise: Promise<T> | undefined;
+    let loadPromise: Promise<T | T[] | undefined> | undefined;
 
     const loadModule = () => {
       if (loadPromise) {

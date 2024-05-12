@@ -24,6 +24,7 @@ export class InjectionToken<T = unknown> {
 export type InjectionTokenType<T = unknown> =
   | Constructor<T>
   | InjectionToken<T>
+  | ProviderIdentifier<T>
   | symbol
   | string;
 
