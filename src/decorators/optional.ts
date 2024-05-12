@@ -16,7 +16,7 @@ export function optional() {
 
     // property decorator
     if (propertyKey !== undefined) {
-      defineOptionInDescriptor(target, propertyKey, {
+      defineOptionInDescriptor(target.constructor, propertyKey, {
         optional: true,
       });
     }

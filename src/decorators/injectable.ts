@@ -1,4 +1,4 @@
-import { Constructor } from '@/common';
+import { Constructor, InjectionTokenType } from '@/common';
 import { IContainer, rootContainer } from '@/containers';
 import { ProviderOptions } from '@/providers';
 import {
@@ -8,11 +8,13 @@ import {
 
 export function injectable(
   options?: ProviderOptions & {
+    token?: InjectionTokenType<unknown>;
     container?: IContainer;
     defaultProps?: any[];
   },
 ) {
   const {
+    token,
     container = rootContainer,
     defaultProps,
     ...restOptions
@@ -36,7 +38,7 @@ export function injectable(
     }
 
     container.register(
-      target,
+      token || target,
       {
         useClass: target,
         defaultProps,

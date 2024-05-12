@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 describe('[Components] test InjectionToken', () => {
   it('should works normally', () => {
     class A {}
-    class B {}
 
     const tokenForA = new InjectionToken<A>('TokenA', {
       prototype: A,

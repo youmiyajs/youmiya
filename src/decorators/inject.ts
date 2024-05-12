@@ -44,7 +44,7 @@ export function inject<T>(
         throw new InjectionTokenInvalidError(token);
       }
 
-      definePropertyDependencyDescriptor(target, {
+      definePropertyDependencyDescriptor(target.constructor, {
         options,
         token,
         key: propertyKey,

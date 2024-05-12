@@ -16,7 +16,7 @@ export function multiple() {
 
     // property decorator
     if (propertyKey !== undefined) {
-      defineOptionInDescriptor(target, propertyKey, {
+      defineOptionInDescriptor(target.constructor, propertyKey, {
         multiple: true,
       });
     }

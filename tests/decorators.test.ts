@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { createProviderIdentifier, inject, injectable, optional, rootContainer } from '../src';
+import { createProviderIdentifier, inject, injectable, multiple, optional, rootContainer } from '../src';
 import { NoProviderFoundError } from '@/common';
 
 describe('[Decorator] test util decorators', () => {
@@ -40,7 +40,7 @@ describe('[Decorator] test util decorators', () => {
       constructor(@inject('C') public c: unknown) {}
     }
 
-    expect(() => rootContainer.instatiate(A)).toThrowError(NoProviderFoundError);
+    expect(() => rootContainer.instantiate(A)).toThrowError(NoProviderFoundError);
 
     class B {
       constructor(
@@ -52,11 +52,35 @@ describe('[Decorator] test util decorators', () => {
       @optional() @inject('D') public d2: unknown;
     }
 
-    const b = rootContainer.instatiate(B);
+    const b = rootContainer.instantiate(B);
     expect(b.c).toBe(undefined);
     expect(b.d).toBe(undefined);
     expect(b.c2).toBe(undefined);
     expect(b.d2).toBe(undefined);
+  });
+
+  it('test multiple(): should returns an array of multiple instances', () => {
+    @injectable({ token: 'Foo' }) class A {}
+    @injectable({ token: 'Foo' }) class B {}
+
+    class C {
+      constructor(
+        @inject('Foo') @multiple() public foo1: unknown[],
+        @multiple() @inject('Foo') public foo2: unknown[],
+      ) {}
+
+      @multiple() @inject('Foo') public foo3!: unknown[];
+      @inject('Foo') @multiple() public foo4!: unknown[];
+    }
+
+    const c = rootContainer.instantiate(C);
+    expect(c.foo1.length).toBe(2);
+    expect(c.foo2.length).toBe(2);
+    expect(c.foo3.length).toBe(2);
+    expect(c.foo4.length).toBe(2);
+
+    expect(c.foo1[0]).toBeInstanceOf(A);
+    expect(c.foo1[1]).toBeInstanceOf(B);
   });
 });
 
@@ -82,6 +106,6 @@ describe('[Decorator] test inject()', () => {
       }
     }
 
-    expect(rootContainer.instatiate(B).b()).toBe(2);
+    expect(rootContainer.instantiate(B).b()).toBe(2);
   });
 });

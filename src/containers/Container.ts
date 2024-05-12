@@ -101,23 +101,23 @@ export class Container implements IContainer {
     return this.resolveImpl(unwrappedToken, context);
   }
 
-  public instatiate<T>(
+  public instantiate<T>(
     constructor: Constructor<T>,
     options?: ResolutionOptions<false, false>,
   ): T;
-  public instatiate<T>(
+  public instantiate<T>(
     constructor: Constructor<T>,
     options?: ResolutionOptions<false, true>,
   ): T[];
-  public instatiate<T>(
+  public instantiate<T>(
     constructor: Constructor<T>,
     options?: ResolutionOptions<true, false>,
   ): T | undefined;
-  public instatiate<T>(
+  public instantiate<T>(
     constructor: Constructor<T>,
     options?: ResolutionOptions<true, true>,
   ): T[] | undefined;
-  public instatiate<T, Optional extends boolean, Multiple extends boolean>(
+  public instantiate<T, Optional extends boolean, Multiple extends boolean>(
     constructor: Constructor<T>,
     options?: ResolutionOptions<Optional, Multiple>,
   ): ReturnType<Container['resolve']> {

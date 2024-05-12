@@ -54,7 +54,7 @@ export interface ProviderOptions {
   singleton?: SingletonScope | boolean;
 
   /**
-   * Specify whether the provider can be lazy instatiated in use time.
+   * Specify whether the provider can be lazy instantiated in use time.
    * Only works with ClassProvider.
    *
    * @default true

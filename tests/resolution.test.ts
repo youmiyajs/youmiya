@@ -85,6 +85,19 @@ describe('[Basic] test register & resolution features', () => {
     expect(e.d).toBeInstanceOf(A);
     expect(e.d).toBe(e.a);
   });
+
+  it('should resolve multiple instances when registered multiple providers for a token', () => {
+    class A {}
+    class B {}
+
+    rootContainer.register('A', { useClass: A });
+    rootContainer.register('A', { useClass: B });
+
+    const res = rootContainer.resolve('A', { multiple: true });
+    expect(res.length).toBe(2);
+    expect(res[0]).toBeInstanceOf(A);
+    expect(res[1]).toBeInstanceOf(B);
+  });
 });
 
 describe('[Basic] test scenes that should throw error', () => {
