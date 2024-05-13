@@ -344,7 +344,15 @@ export class Container implements IContainer {
       return loadPromise;
     };
 
-    return createAsyncModuleLoader<T>(loadModule as () => Promise<object>);
+    const asyncModuleLoader = createAsyncModuleLoader<T>(
+      loadModule as () => Promise<object>,
+    );
+
+    if (context.useCache) {
+      this.instanceMap.set(registration, asyncModuleLoader);
+    }
+
+    return asyncModuleLoader;
   }
 
   public dispose(clearRegistration = false) {
