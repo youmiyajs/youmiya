@@ -25,13 +25,15 @@ import {
 import {
   IProvider,
   ProviderOptions,
-  isValueProvider,
-  isTokenProvider,
-  isClassProvider,
-  isFactoryProvider,
-  isAsyncProvider,
   ClassProvider,
   AsyncProvider,
+  getProviderType,
+  ProviderTypeEnum,
+  ValueProvider,
+  FactoryProvider,
+  TokenProvider,
+  AsyncModuleLoaderFn,
+  FactoryFn,
 } from '@/providers';
 import {
   AsyncModule,
@@ -50,17 +52,47 @@ export class Container implements IContainer {
     private readonly parentContainer?: IContainer,
   ) {}
 
-  public register<T>(
+  public register<T>(token: InjectionTokenType<T> | ProviderIdentifier<T>) {
+    return {
+      to: (provider: IProvider<T>, options?: ProviderOptions) =>
+        this.registerImpl(token, provider, options),
+      toValue: (value: T, options?: ProviderOptions) =>
+        this.registerImpl(token, { useValue: value }, options),
+      toFactory: (factoryFn: FactoryFn<T>, options?: ProviderOptions) =>
+        this.registerImpl(token, { useFactory: factoryFn }, options),
+      toToken: (target: InjectionTokenType<T>, options?: ProviderOptions) =>
+        this.registerImpl(token, { useToken: target }, options),
+      toAsync: (async: AsyncModuleLoaderFn<T>, options?: ProviderOptions) =>
+        this.registerImpl(token, { useAsync: async }, options),
+      toClass: (
+        constructor: Constructor<T>,
+        options?: ProviderOptions & {
+          defaultProps?: any;
+        },
+      ) => {
+        const { defaultProps, ...registerOptions } = options ?? {};
+
+        return this.registerImpl(
+          token,
+          {
+            useClass: constructor,
+            defaultProps,
+          },
+          registerOptions,
+        );
+      },
+    };
+  }
+
+  private registerImpl<T>(
     token: InjectionTokenType<T> | ProviderIdentifier<T>,
     provider: IProvider<T>,
     options?: ProviderOptions,
-  ): () => void {
+  ) {
     if (!token) {
       throw new InjectionTokenInvalidError(token);
     }
-
     const registerToken = this.unwrapInjectionToken(token);
-
     const registration: ProviderRegistration<T> = {
       provider,
       options,
@@ -106,7 +138,6 @@ export class Container implements IContainer {
     token: InjectionTokenType<T>,
     options?: ResolutionOptions,
   ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined;
-
   public resolve<T, Optional extends boolean, Multiple extends boolean>(
     token: InjectionTokenType<T>,
     options?: ResolutionOptions<Optional, Multiple>,
@@ -164,6 +195,20 @@ export class Container implements IContainer {
 
   public fork(identifier: string): IContainer {
     return new Container(identifier, this);
+  }
+
+  public dispose(clearRegistration = false) {
+    // dispose instances
+    this.instanceMap.forEach(instance => {
+      if (isDisposable(instance)) {
+        instance.dispose?.();
+      }
+    });
+
+    // dispose registration
+    if (clearRegistration) {
+      this.registration.clear();
+    }
   }
 
   private unwrapInjectionToken<T>(token: InjectionTokenType<T>) {
@@ -230,35 +275,39 @@ export class Container implements IContainer {
     const { provider, options } = registration;
     const { lazyable = false } = options ?? {};
 
-    // TODO: circluar depenency
+    switch (getProviderType(provider)) {
+      case ProviderTypeEnum.ClassProvider:
+        return lazyable
+          ? this.createLazyModuleLoader(registration, context)
+          : this.instantiateClass(registration, context);
 
-    if (isValueProvider(provider)) {
-      return provider.useValue;
+      case ProviderTypeEnum.ValueProvider:
+        return (provider as ValueProvider<T>).useValue;
+
+      case ProviderTypeEnum.AsyncProvider:
+        return this.createAsyncModuleLoader(registration, context);
+
+      case ProviderTypeEnum.FactoryProvider:
+        return this.instantiateFactory(registration, context);
+
+      case ProviderTypeEnum.TokenProvider:
+        return this.resolve((provider as TokenProvider<T>).useToken, context);
+
+      default:
+        throw new UnsupportedProviderError(provider);
     }
+  }
 
-    if (isTokenProvider(provider)) {
-      return this.resolve(provider.useToken, context);
+  private instantiateFactory<T>(
+    registration: ProviderRegistration<T>,
+    context: ResolutionContext,
+  ) {
+    const { provider } = registration;
+    const result = (provider as FactoryProvider<T>).useFactory(context);
+    if (context.useCache) {
+      this.instanceMap.set(registration, result);
     }
-
-    if (isClassProvider(provider)) {
-      return lazyable
-        ? this.createLazyModuleLoader(registration, context)
-        : this.instantiateClass(registration, context);
-    }
-
-    if (isFactoryProvider(provider)) {
-      const result = provider.useFactory(context);
-      if (context.useCache) {
-        this.instanceMap.set(registration, result);
-      }
-      return result;
-    }
-
-    if (isAsyncProvider(provider)) {
-      return this.createAsyncModuleLoader(registration, context);
-    }
-
-    throw new UnsupportedProviderError(provider);
+    return result;
   }
 
   private instantiateClass<T>(
@@ -353,20 +402,6 @@ export class Container implements IContainer {
     }
 
     return asyncModuleLoader;
-  }
-
-  public dispose(clearRegistration = false) {
-    // dispose instances
-    this.instanceMap.forEach(instance => {
-      if (isDisposable(instance)) {
-        instance.dispose?.();
-      }
-    });
-
-    // dispose registration
-    if (clearRegistration) {
-      this.registration.clear();
-    }
   }
 }
 

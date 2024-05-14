@@ -1,6 +1,11 @@
 import { AsyncModule } from '..';
-import { InjectionTokenType } from '@/common';
-import { IProvider, ProviderOptions } from '@/providers';
+import { Constructor, InjectionTokenType, ProviderIdentifier } from '@/common';
+import {
+  AsyncModuleLoaderFn,
+  FactoryFn,
+  IProvider,
+  ProviderOptions,
+} from '@/providers';
 
 export interface ProviderRegistration<T> {
   provider: IProvider<T>;
@@ -29,11 +34,28 @@ type Opt<
 > = ResolutionOptions<O, M, A>;
 
 export interface IContainer {
-  register<T>(
-    token: InjectionTokenType<T>,
-    provider: IProvider<T>,
-    options?: ProviderOptions,
-  ): () => void;
+  register<T>(token: InjectionTokenType<T> | ProviderIdentifier<T>): {
+    to: (provider: IProvider<T>, options?: ProviderOptions) => () => void;
+    toClass: (
+      constructor: Constructor<T>,
+      options?: ProviderOptions & {
+        defaultProps?: any;
+      },
+    ) => () => void;
+    toValue: (value: T, options?: ProviderOptions) => () => void;
+    toFactory: (
+      factoryFn: FactoryFn<T>,
+      options?: ProviderOptions,
+    ) => () => void;
+    toToken: (
+      token: InjectionTokenType<T>,
+      options?: ProviderOptions,
+    ) => () => void;
+    toAsync: (
+      async: AsyncModuleLoaderFn<T>,
+      options?: ProviderOptions,
+    ) => () => void;
+  };
 
   resolve<T>(token: Token<T>, options?: Opt<false, false, false>): T;
   resolve<T>(token: Token<T>, options?: Opt<false, true, false>): T[];
@@ -58,6 +80,10 @@ export interface IContainer {
     token: Token<T>,
     options?: Opt<true, true, true>,
   ): AsyncModule<T>[] | undefined;
+  resolve<T>(
+    token: Token<T>,
+    options?: ResolutionOptions,
+  ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined;
 
   fork(identifier: string): IContainer;
 

@@ -17,7 +17,7 @@ describe('[Decorator] test util decorators', () => {
       }
     }
     const IFoo = createProviderIdentifier<IFoo>('Foo');
-    rootContainer.register(IFoo, { useClass: Foo });
+    rootContainer.register(IFoo).toClass(Foo);
 
     // bar
     interface IBar {
@@ -30,7 +30,7 @@ describe('[Decorator] test util decorators', () => {
         return 1 + this.foo.foo();
       }
     }
-    rootContainer.register(IBar, { useClass: Bar });
+    rootContainer.register(IBar).toClass(Bar);
 
     expect(rootContainer.resolve(IBar).bar()).toBe(2);
   });

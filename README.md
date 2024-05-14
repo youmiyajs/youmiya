@@ -70,7 +70,7 @@ class FooImpl implements IFoo {
 }
 
 // bind provider identifier to implementation
-rootContainer.register(Foo, { useClass: FooImpl });
+rootContainer.register(Foo).toClass(FooImpl);
 ```
 
 `bar.ts`
@@ -95,7 +95,7 @@ class BarImpl implements IBar {
   }
 }
 
-rootContainer.register(IBar, { useClass: BarImpl });
+rootContainer.register(IBar).toClass(BarImpl);
 
 const bar = rootContainer.resolve(IBar);
 bar.echo(); // foobar

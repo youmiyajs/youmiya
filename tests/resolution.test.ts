@@ -19,12 +19,12 @@ describe('[Basic] test register & resolution features', () => {
     class B {}
     class C {}
 
-    rootContainer.register('A', { useClass: A });
-    rootContainer.register('B', { useValue: B });
-    rootContainer.register('C', { useFactory: () => C });
-    rootContainer.register('D', { useToken: 'A' });
-    rootContainer.register(A, { useClass: A });
-    rootContainer.register('E', { useAsync: () => Promise.resolve(A) });
+    rootContainer.register('A').toClass(A);
+    rootContainer.register('B').toValue(B);
+    rootContainer.register('C').to({ useFactory: () => C });
+    rootContainer.register('D').to({ useToken: 'A' });
+    rootContainer.register(A).to({ useClass: A });
+    rootContainer.register('E').to({ useAsync: () => Promise.resolve(A) });
 
     expect(rootContainer.resolve('A')).toBeInstanceOf(A);
     expect(rootContainer.resolve('B')).toBe(B);
@@ -42,9 +42,9 @@ describe('[Basic] test register & resolution features', () => {
       constructor(@inject(A) public a: A, @inject(B) public b: B) {}
     }
 
-    rootContainer.register(A, { useClass: A });
-    rootContainer.register(B, { useClass: B });
-    rootContainer.register(C, { useClass: C });
+    rootContainer.register(A).to({ useClass: A });
+    rootContainer.register(B).to({ useClass: B });
+    rootContainer.register(C).to({ useClass: C });
 
     const a = rootContainer.resolve(A);
     expect(a).toBeInstanceOf(A);
@@ -64,10 +64,10 @@ describe('[Basic] test register & resolution features', () => {
     const B = 1;
     const C = () => 2;
 
-    rootContainer.register('A', { useClass: A });
-    rootContainer.register('B', { useValue: B });
-    rootContainer.register('C', { useFactory: C });
-    rootContainer.register('D', { useToken: 'A' });
+    rootContainer.register('A').to({ useClass: A });
+    rootContainer.register('B').to({ useValue: B });
+    rootContainer.register('C').to({ useFactory: C });
+    rootContainer.register('D').to({ useToken: 'A' });
 
     @injectable()
     class E {
@@ -91,8 +91,8 @@ describe('[Basic] test register & resolution features', () => {
     class A {}
     class B {}
 
-    rootContainer.register('A', { useClass: A });
-    rootContainer.register('A', { useClass: B });
+    rootContainer.register('A').to({ useClass: A });
+    rootContainer.register('A').to({ useClass: B });
 
     const res = rootContainer.resolve('A', { multiple: true });
     expect(res.length).toBe(2);
@@ -107,7 +107,7 @@ describe('[Basic] test scenes that should throw error', () => {
   it('should throw InjectionTokenInvalidError when resolve a invalid token', () => {
     class A {}
     expect(() => {
-      rootContainer.register(null as any, {
+      rootContainer.register(null as any).to({
         useClass: A,
       });
     }).toThrowError(InjectionTokenInvalidError);
@@ -115,7 +115,7 @@ describe('[Basic] test scenes that should throw error', () => {
 
   it('should throw UnsupportedProviderError when provider is not class/value/factory/async/token', () => {
     expect(() => {
-      rootContainer.register('A', {
+      rootContainer.register('A').to({
         useAny: 1,
       } as any);
 
@@ -130,7 +130,7 @@ describe('[Basic] test scenes that should throw error', () => {
         constructor(@inject() a: A) {}
       }
 
-      rootContainer.register(B, { useClass: B });
+      rootContainer.register(B).toClass(B);
       rootContainer.resolve(B);
     }).toThrowError(NoReflectMetadataSupportError);
   });

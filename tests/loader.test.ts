@@ -16,7 +16,7 @@ describe('[Loader] test module loader proxy features', () => {
     const fooLoader = () => Promise.resolve(Foo);
     const FooLoaderIdentifier = new InjectionToken<Foo>('FooLoader');
 
-    rootContainer.register(FooLoaderIdentifier, { useAsync: fooLoader });
+    rootContainer.register(FooLoaderIdentifier).toAsync(fooLoader);
 
     const asyncFoo = rootContainer.resolve(FooLoaderIdentifier, { async: true });
     expect(asyncFoo.foo).toBeInstanceOf(Promise);

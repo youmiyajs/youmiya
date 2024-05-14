@@ -35,6 +35,14 @@ export type IProvider<T = unknown> =
   | TokenProvider<T>
   | ValueProvider<T>;
 
+export const enum ProviderTypeEnum {
+  AsyncProvider,
+  ClassProvider,
+  FactoryProvider,
+  TokenProvider,
+  ValueProvider,
+}
+
 export const enum SingletonScope {
   Global = 'global',
   Scoped = 'scoped',

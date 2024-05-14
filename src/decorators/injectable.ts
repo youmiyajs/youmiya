@@ -13,12 +13,7 @@ export function injectable(
     defaultProps?: any[];
   },
 ) {
-  const {
-    token,
-    container = rootContainer,
-    defaultProps,
-    ...restOptions
-  } = options ?? {};
+  const { token, container = rootContainer, ...restOptions } = options ?? {};
 
   return function <T>(target: Constructor<T>) {
     if (hasReflectMetadata()) {
@@ -37,13 +32,6 @@ export function injectable(
       });
     }
 
-    container.register(
-      token || target,
-      {
-        useClass: target,
-        defaultProps,
-      },
-      restOptions,
-    );
+    container.register(token || target).toClass(target, restOptions);
   };
 }
