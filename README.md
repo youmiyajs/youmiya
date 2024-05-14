@@ -1,19 +1,22 @@
-# Youmiya
+# 🍫 Youmiya
 
 > ⚠️ Warning: This project is experimental now and still under construction.
 
 `Youmiya` is a simple dependency injection (DI) library for Typescript with modern features:
 
 - Supports both decorator style and interface-oriented style
-- Supports lazy (delayed) instantiation
-- Supports async module provider
 - Works without reflect-metadata support (interface-oriented style)
+- Lazy (delayed) instantiation
+- Async module provider
+- Supports hierarchical containers
 
 And more features are on the way:
 
 - Handle with circular dependencies
-- Interception like tsyringe
+- Interceptors like tsyringe
 - Injection transform
+- Modular system
+- Idle-time load & instatiation
 
 ## Getting Started
 
