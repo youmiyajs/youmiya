@@ -8,6 +8,7 @@ import {
 } from './types';
 import {
   getClassDescriptorsSet,
+  isConstructor,
   isDisposable,
   isGlobalSingleton,
   isScopedSingleton,
@@ -155,44 +156,6 @@ export class Container implements IContainer {
     return this.resolveImpl(unwrappedToken, context);
   }
 
-  public instantiate<T>(
-    constructor: Constructor<T>,
-    options?: ResolutionOptions<false, false>,
-  ): T;
-  public instantiate<T>(
-    constructor: Constructor<T>,
-    options?: ResolutionOptions<false, true>,
-  ): T[];
-  public instantiate<T>(
-    constructor: Constructor<T>,
-    options?: ResolutionOptions<true, false>,
-  ): T | undefined;
-  public instantiate<T>(
-    constructor: Constructor<T>,
-    options?: ResolutionOptions<true, true>,
-  ): T[] | undefined;
-  public instantiate<T, Optional extends boolean, Multiple extends boolean>(
-    constructor: Constructor<T>,
-    options?: ResolutionOptions<Optional, Multiple>,
-  ): ReturnType<Container['resolve']> {
-    const provide: NonNullable<ResolutionOptions['provide']> =
-      options?.provide ?? new Map();
-
-    provide.set(constructor, [
-      {
-        provider: { useClass: constructor },
-        options: {
-          singleton: false,
-        },
-      },
-    ]);
-
-    return this.resolve(constructor, {
-      ...options,
-      provide,
-    });
-  }
-
   public fork(identifier: string): IContainer {
     return new Container(identifier, this);
   }
@@ -225,11 +188,26 @@ export class Container implements IContainer {
     // get registrations in this container
     const registrations =
       context.provide?.get(token) || this.registration.get(token);
+
     if (!registrations?.length) {
       // if this container has no resolution, recursively get in parent container
       if (context.resolveParent && this.parentContainer) {
         return this.parentContainer.resolve(token, context as any); // TODO: remove any here
       }
+
+      // if this token itself is a constructor, use itself as class provider
+      if (isConstructor(token)) {
+        return this.resolveFromRegistrations(
+          [
+            {
+              provider: { useClass: token },
+              options: { singleton: false },
+            },
+          ],
+          context,
+        );
+      }
+
       // if accepts optional, return null
       if (context.optional) {
         return undefined;
@@ -237,6 +215,13 @@ export class Container implements IContainer {
       throw new NoProviderFoundError(token);
     }
 
+    return this.resolveFromRegistrations(registrations, context);
+  }
+
+  private resolveFromRegistrations<T>(
+    registrations: readonly ProviderRegistration<T>[],
+    context: ResolutionContext,
+  ) {
     if (!context.multiple) {
       return this.resolveSingleRegistration(
         registrations[registrations.length - 1],

@@ -40,7 +40,7 @@ describe('[Decorator] test util decorators', () => {
       constructor(@inject('C') public c: unknown) {}
     }
 
-    expect(() => rootContainer.instantiate(A)).toThrowError(NoProviderFoundError);
+    expect(() => rootContainer.resolve(A)).toThrowError(NoProviderFoundError);
 
     class B {
       constructor(
@@ -52,7 +52,7 @@ describe('[Decorator] test util decorators', () => {
       @optional() @inject('D') public d2: unknown;
     }
 
-    const b = rootContainer.instantiate(B);
+    const b = rootContainer.resolve(B);
     expect(b.c).toBe(undefined);
     expect(b.d).toBe(undefined);
     expect(b.c2).toBe(undefined);
@@ -73,7 +73,7 @@ describe('[Decorator] test util decorators', () => {
       @inject('Foo') @multiple() public foo4!: unknown[];
     }
 
-    const c = rootContainer.instantiate(C);
+    const c = rootContainer.resolve(C);
     expect(c.foo1.length).toBe(2);
     expect(c.foo2.length).toBe(2);
     expect(c.foo3.length).toBe(2);
@@ -106,6 +106,6 @@ describe('[Decorator] test inject()', () => {
       }
     }
 
-    expect(rootContainer.instantiate(B).b()).toBe(2);
+    expect(rootContainer.resolve(B).b()).toBe(2);
   });
 });

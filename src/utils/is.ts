@@ -1,5 +1,5 @@
 import { ProviderRegistration, SingletonScope } from '..';
-import { IDisposable } from '@/common';
+import { Constructor, IDisposable } from '@/common';
 
 export function isDisposable(
   maybeDisposable: unknown,
@@ -16,4 +16,8 @@ export function isGlobalSingleton(registration: ProviderRegistration<unknown>) {
 
 export function isScopedSingleton(registration: ProviderRegistration<unknown>) {
   return registration.options?.singleton === SingletonScope.Scoped;
+}
+
+export function isConstructor(target: unknown): target is Constructor<unknown> {
+  return typeof target === 'function';
 }

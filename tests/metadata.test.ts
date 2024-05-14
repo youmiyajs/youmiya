@@ -20,7 +20,7 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
       constructor(public a: A, public b: B) {}
     }
 
-    const c = rootContainer.instantiate(C);
+    const c = rootContainer.resolve(C);
     expect(c).toBeInstanceOf(C);
     expect(c.a).toBeInstanceOf(A);
     expect(c.b).toBeInstanceOf(B);
@@ -37,7 +37,7 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
       constructor(@inject() public a: A, @inject() public b: B) {}
     }
 
-    const c = rootContainer.instantiate(C);
+    const c = rootContainer.resolve(C);
     expect(c).toBeInstanceOf(C);
     expect(c.a).toBeInstanceOf(A);
     expect(c.b).toBeInstanceOf(B);
@@ -55,7 +55,7 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
       @inject() public b!: B;
     }
 
-    const c = rootContainer.instantiate(C);
+    const c = rootContainer.resolve(C);
     expect(c.a).toBeInstanceOf(A);
     expect(c.b).toBeInstanceOf(B);
   });
