@@ -1,5 +1,11 @@
 # youmiya
 
+## 0.1.4
+
+### Patch Changes
+
+- a686cf5: Refine container.register() and container.resolve() APIs
+
 ## 0.1.3
 
 ### Patch Changes
