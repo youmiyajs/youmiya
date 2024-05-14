@@ -15,43 +15,40 @@ export type LazyModule<T> = T & {
   [MODULE_LOADER_TYPE_SYMBOL]: ModuleLoaderType.LazyModule;
 };
 
-export function createLazyModuleLoader<T>(getModule: () => object): T {
-  const loader = new Proxy(
-    {
-      [MODULE_LOADER_TYPE_SYMBOL]: ModuleLoaderType.LazyModule,
-    },
-    {
-      get(target, key: string | symbol, receiver) {
-        if (key === MODULE_LOADER_TYPE_SYMBOL) {
-          return (target as LazyModule<T>)[MODULE_LOADER_TYPE_SYMBOL];
-        }
-        return Reflect.get(getModule(), key, receiver);
-      },
-      set(_, key: string | symbol, value: any, receiver) {
-        return Reflect.set(getModule(), key, value, receiver);
-      },
-      defineProperty(_, property, attributes) {
-        return Reflect.defineProperty(getModule(), property, attributes);
-      },
-      deleteProperty(_, p) {
-        return Reflect.deleteProperty(getModule(), p);
-      },
-      has(_, p) {
-        return Reflect.has(getModule(), p);
-      },
-      getOwnPropertyDescriptor(_, p) {
-        return Reflect.getOwnPropertyDescriptor(getModule(), p);
-      },
-      ownKeys(_) {
-        return Reflect.ownKeys(getModule());
-      },
-      setPrototypeOf(_, v) {
-        return Reflect.setPrototypeOf(getModule(), v);
-      },
-    },
-  ) as T;
+const REFLECT_METHODS = [
+  'get',
+  'apply',
+  'getPrototypeOf',
+  'setPrototypeOf',
+  'getOwnPropertyDescriptor',
+  'defineProperty',
+  'has',
+  'set',
+  'deleteProperty',
+  'construct',
+  'ownKeys',
+] as const;
 
-  return loader;
+function defineLazyModuleReflectHandlers(getTarget: () => object) {
+  const handlers: ProxyHandler<any> = {};
+
+  REFLECT_METHODS.forEach(name => {
+    handlers[name] = function (...args: any[]) {
+      const method = Reflect[name];
+      args[0] = getTarget();
+      return (method as any)(...args);
+    };
+  });
+
+  return handlers;
+}
+
+export function createLazyModuleLoader<T>(getModule: () => object): T {
+  const target = {
+    [MODULE_LOADER_TYPE_SYMBOL]: ModuleLoaderType.LazyModule,
+  };
+
+  return new Proxy(target, defineLazyModuleReflectHandlers(getModule)) as T;
 }
 
 export function createAsyncModuleLoader<T>(
@@ -60,18 +57,12 @@ export function createAsyncModuleLoader<T>(
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const noop = (() => {}) as AsyncModule<T>;
 
-  noop[MODULE_LOADER_TYPE_SYMBOL] = ModuleLoaderType.AsyncModule;
-
   return new Proxy(noop, {
     apply() {
       return loadModule();
     },
 
-    get(target: AsyncModule<T>, key: string | symbol, receiver) {
-      if (key === MODULE_LOADER_TYPE_SYMBOL) {
-        return target[MODULE_LOADER_TYPE_SYMBOL];
-      }
-
+    get(_, key: string | symbol, receiver) {
       return loadModule().then(module => Reflect.get(module, key, receiver));
     },
 
