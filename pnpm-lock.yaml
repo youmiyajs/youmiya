@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@abraham/reflection':
-        specifier: ^0.12.0
-        version: 0.12.0
       '@modern-js/eslint-config':
         specifier: 2.49.2
         version: 2.49.2(typescript@5.0.4)
@@ -52,9 +49,6 @@ importers:
         version: 1.6.0(@types/node@16.11.68)(terser@5.19.2)
 
 packages:
-
-  '@abraham/reflection@0.12.0':
-    resolution: {integrity: sha512-OoLlgBE5u18mc61pJNamEh2OtFpHjtvDi1pV4ojnnH77juCvQw/Z3YlHF8TJiorU7/V6UuGApFzsi+bieug7fg==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -4098,8 +4092,6 @@ packages:
     resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
 
 snapshots:
-
-  '@abraham/reflection@0.12.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:

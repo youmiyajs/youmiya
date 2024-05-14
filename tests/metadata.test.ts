@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import '@abraham/reflection';
+import 'reflect-metadata';
 import { inject, injectable } from '@/decorators';
 import { rootContainer } from '@/containers';
 
