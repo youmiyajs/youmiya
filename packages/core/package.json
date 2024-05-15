@@ -1,0 +1,57 @@
+{
+  "name": "@youmiya/core",
+  "description": "Simple modern dependency injection container.",
+  "author": "Aki <kirainmoe@gmail.com>",
+  "version": "0.1.5",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "module": "./dist/es/index.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "modern dev",
+    "build": "modern build",
+    "build:watch": "modern build -w",
+    "reset": "rimraf ./**/node_modules",
+    "lint": "modern lint",
+    "change": "modern change",
+    "bump": "modern bump",
+    "pre": "modern pre",
+    "change-status": "modern change-status",
+    "gen-release-note": "modern gen-release-note",
+    "release": "modern release",
+    "new": "modern new",
+    "upgrade": "modern upgrade",
+    "test": "vitest -c config/vitest.config.mts",
+    "test:run": "vitest run -c config/vitest.config.mts --coverage"
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "dist/"
+  ],
+  "devDependencies": {
+    "@modern-js/eslint-config": "2.49.2",
+    "@modern-js/module-tools": "2.49.2",
+    "@types/node": "^18.0.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "husky": "~8.0.1",
+    "lint-staged": "~13.1.0",
+    "prettier": "~2.8.1",
+    "reflect-metadata": "^0.2.2",
+    "rimraf": "~3.0.2",
+    "tsx": "^4.10.2",
+    "typescript": "~5.0.4",
+    "vite-plugin-swc-transform": "^0.3.1",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
+  },
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

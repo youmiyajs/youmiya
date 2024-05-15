@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "build:watch": {
+      "dependsOn": ["^build"]
+    },
+    "release": {
+      "dependsOn": ["build"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "test:run": {
+      "dependsOn": ["build"],
+      "outputs": ["{projectRoot}/coverage"],
+      "cache": true
+    }
+  },
+  "defaultBase": "main"
+}
