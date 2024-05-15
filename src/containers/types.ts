@@ -22,6 +22,7 @@ export interface ResolutionOptions<
   optional?: Optional;
   multiple?: Multiple;
   async?: Async;
+  lazy?: boolean;
   provide?: Map<InjectionTokenType<unknown>, ProviderRegistration<unknown>[]>;
 }
 
