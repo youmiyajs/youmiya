@@ -102,6 +102,6 @@ describe('[Errors] test scenes that should throw error', () => {
     expect(() => rootContainer.resolve('B')).toThrowError(
       CircularDependencyDetectedError,
     );
-    // TODO: why rootContainer.resolve(B) did not throws?
+    expect(() => rootContainer.resolve(B)).toThrowError(CircularDependencyDetectedError);
   });
 });

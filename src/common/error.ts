@@ -37,9 +37,14 @@ export class CircularDependencyDetectedError extends Error {
     let path = `${String(currentToken)}`;
     let token: InjectionTokenType<unknown> | undefined =
       resolutionSource.sourceToken;
+
     while (token !== undefined) {
       path += ` <- ${String(token)}`;
-      token = resolveGraph.get(token)?.sourceToken;
+      const nextToken = resolveGraph.get(token)?.sourceToken;
+      if (nextToken === token) {
+        break;
+      }
+      token = nextToken;
     }
 
     super(
