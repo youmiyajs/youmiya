@@ -210,7 +210,7 @@ export class Container implements IContainer {
       }
 
       // if this token itself is a constructor, use itself as class provider
-      if (isConstructor(token)) {
+      if (isConstructor(token) && context.rootToken === token) {
         return this.resolveFromRegistrations(
           token,
           [

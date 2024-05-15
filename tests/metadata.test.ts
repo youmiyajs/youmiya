@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import 'reflect-metadata';
-import { inject, injectable } from '@/decorators';
+import { inject, injectable, optional } from '@/decorators';
 import { rootContainer } from '@/containers';
+import { InjectionTokenInvalidError } from '@/common';
 
 describe('[Metadata] test scenes that requires reflect-metadata polyfill', () => {
   beforeEach(() => {
@@ -17,7 +18,7 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
 
     @injectable()
     class C {
-      constructor(public a: A, public b: B) {}
+      constructor(public a: A, public b: B, @optional public c?: Number) {}
     }
 
     const c = rootContainer.resolve(C);
@@ -28,7 +29,9 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
 
   it('@inject(): should automatically infer dependency constructor when used in consturctor parameters', () => {
     @injectable()
-    class A {}
+    class A {
+      constructor() {}
+    }
 
     @injectable()
     class B {}
@@ -58,5 +61,25 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
     const c = rootContainer.resolve(C);
     expect(c.a).toBeInstanceOf(A);
     expect(c.b).toBeInstanceOf(B);
+  });
+
+  it('@inject(): should throw error if inferred dependency is invalid', () => {
+    @injectable()
+    class A {}
+
+    @injectable()
+    class B {}
+
+    expect(() => {
+      class C {
+        constructor(@inject() public a: undefined) {}
+      }
+    }).toThrowError(InjectionTokenInvalidError);
+
+    expect(() => {
+      class D {
+        @inject() public a: undefined;
+      }
+    }).toThrowError(InjectionTokenInvalidError);
   });
 });
