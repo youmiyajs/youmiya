@@ -1,5 +1,11 @@
 # youmiya
 
+## 0.1.5
+
+### Patch Changes
+
+- e1c2b30: Support throw error or lazy load circular dependency
+
 ## 0.1.4
 
 ### Patch Changes
