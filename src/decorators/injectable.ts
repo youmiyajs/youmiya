@@ -21,10 +21,6 @@ export function injectable(
         Reflect.getMetadata('design:paramtypes', target) || [];
 
       constructorParams.forEach((paramType: unknown, index: number) => {
-        if (typeof paramType !== 'function') {
-          return;
-        }
-
         defineConstructorDependencyDescriptor(target, {
           token: paramType as Constructor<unknown>,
           index,
