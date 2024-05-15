@@ -6,7 +6,7 @@ import {
   CircularDependencyDetectedError,
 } from '@/common';
 import { rootContainer } from '@/containers';
-import { injectable, inject } from '@/decorators';
+import { injectable, inject, lazy } from '@/decorators';
 import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('[Errors] test scenes that should throw error', () => {
@@ -75,7 +75,7 @@ describe('[Errors] test scenes that should throw error', () => {
 
     @injectable({ token: 'B' })
     class B {
-      constructor(@inject('A', { lazy: true }) public a: A) {}
+      constructor(@lazy() @inject('A') public a: A) {}
     }
 
     const b = rootContainer.resolve(B);
@@ -90,11 +90,12 @@ describe('[Errors] test scenes that should throw error', () => {
       echo() {
         console.log('A');
       }
+      @inject('B') @lazy() public b2: unknown;
     }
 
     @injectable({ token: 'B' })
     class B {
-      constructor(@inject('A', { lazy: true }) public a: A) {
+      constructor(@inject('A') @lazy() public a: A) {
         a.echo();
       }
     }
