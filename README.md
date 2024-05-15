@@ -6,13 +6,13 @@
 
 - Supports both decorator style and interface-oriented style
 - Works without reflect-metadata support (interface-oriented style)
-- Lazy (delayed) instantiation
-- Async module provider
+- On-demand lazy (delayed) instantiation
+- Support async module injection
 - Supports hierarchical containers
+- Circular dependency detection & workaround
 
 And more features are on the way:
 
-- Handle with circular dependencies
 - Interceptors like tsyringe
 - Injection transform
 - Modular system
