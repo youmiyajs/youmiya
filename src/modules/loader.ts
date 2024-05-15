@@ -65,10 +65,5 @@ export function createAsyncModuleLoader<T>(
     get(_, key: string | symbol, receiver) {
       return loadModule().then(module => Reflect.get(module, key, receiver));
     },
-
-    set(_, key: string | symbol, value: any, receiver) {
-      loadModule().then(module => Reflect.set(module, key, value, receiver));
-      return true;
-    },
   });
 }

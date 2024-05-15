@@ -9,6 +9,7 @@ export function isDisposable(
 
 export function isGlobalSingleton(registration: ProviderRegistration<unknown>) {
   return (
+    registration.options?.singleton === undefined ||
     registration.options?.singleton === true ||
     registration.options?.singleton === SingletonScope.Global
   );
