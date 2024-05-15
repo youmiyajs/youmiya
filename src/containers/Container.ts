@@ -287,7 +287,7 @@ export class Container implements IContainer {
         lazyable &&
         getProviderType(provider) === ProviderTypeEnum.ClassProvider
       ) {
-        return this.createLazyModuleLoader(registration, nextContext);
+        return this.createLazyModuleLoader(token, registration, nextContext);
       }
       throw new CircularDependencyDetectedError(
         token,
@@ -300,7 +300,7 @@ export class Container implements IContainer {
       switch (getProviderType(provider)) {
         case ProviderTypeEnum.ClassProvider:
           return lazyable
-            ? this.createLazyModuleLoader(registration, nextContext)
+            ? this.createLazyModuleLoader(token, registration, nextContext)
             : this.instantiateClass(registration, nextContext);
 
         case ProviderTypeEnum.ValueProvider:
@@ -379,6 +379,7 @@ export class Container implements IContainer {
   }
 
   private createLazyModuleLoader<T>(
+    token: InjectionTokenType<T>,
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ) {
@@ -388,6 +389,17 @@ export class Container implements IContainer {
       if (localCached) {
         return localCached as object;
       }
+      const currentResolving = this.markResolutionStart(token, context);
+      if (currentResolving) {
+        // if the lazy module is still initializing when it is called
+        // means that there is an invalid circular dependency
+        throw new CircularDependencyDetectedError(
+          token,
+          currentResolving,
+          this.resolveInProgress,
+        );
+      }
+
       localCached = this.instantiateClass(registration, context);
       return localCached as object;
     };
