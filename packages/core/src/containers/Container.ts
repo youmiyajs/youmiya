@@ -44,8 +44,11 @@ import {
   createAsyncModuleLoader,
   createLazyModuleLoader,
 } from '@/modules';
+import { InterceptorEvents, InterceptorRegistry } from '@/interceptors';
 
 export class Container implements IContainer {
+  public registerInterceptor: InterceptorRegistry['on'];
+
   private readonly registration: RegistrationMap = new RegistrationMap();
 
   private readonly instanceMap: Map<ProviderRegistration<unknown>, unknown> =
@@ -56,10 +59,17 @@ export class Container implements IContainer {
     ResolutionSource
   > = new Map();
 
+  private readonly interceptorRegistry: InterceptorRegistry =
+    new InterceptorRegistry();
+
   constructor(
     public readonly identifier: string,
     private readonly parentContainer?: IContainer,
-  ) {}
+  ) {
+    this.registerInterceptor = this.interceptorRegistry.on.bind(
+      this.interceptorRegistry,
+    );
+  }
 
   public register<T>(token: InjectionTokenType<T> | ProviderIdentifier<T>) {
     return {
@@ -94,24 +104,47 @@ export class Container implements IContainer {
   }
 
   private registerImpl<T>(
-    token: InjectionTokenType<T> | ProviderIdentifier<T>,
-    provider: IProvider<T>,
-    options?: ProviderOptions,
+    _token: InjectionTokenType<T> | ProviderIdentifier<T>,
+    _provider: IProvider<T>,
+    _options?: ProviderOptions,
   ) {
+    const {
+      token = _token,
+      provider = _provider,
+      options = _options,
+    } = this.interceptorRegistry.dispatch<T>(InterceptorEvents.BeforeRegister, {
+      token: _token,
+      provider: _provider,
+      options: _options,
+      container: this,
+    }) ?? {};
+
     if (!token) {
       throw new InjectionTokenInvalidError(token);
     }
     const registerToken = this.unwrapInjectionToken(token);
+
     const registration: ProviderRegistration<T> = {
       provider,
       options,
     };
 
     this.registration.register(registerToken, registration);
-    return () => {
+    const unregister = () => {
       this.instanceMap.delete(registration);
       this.registration.unregister(registerToken, registration);
     };
+
+    this.interceptorRegistry.dispatch<T>(InterceptorEvents.AfterRegister, {
+      token,
+      provider,
+      options,
+      registration,
+      unregister,
+      container: this,
+    });
+
+    return unregister;
   }
 
   public resolve<T>(
@@ -196,17 +229,25 @@ export class Container implements IContainer {
   }
 
   private resolveImpl<T>(
-    token: InjectionTokenType<T>,
-    context: ResolutionContext,
+    _token: InjectionTokenType<T>,
+    _context: ResolutionContext,
   ) {
+    const { token = _token, context = _context } =
+      this.interceptorRegistry.dispatch<T>(InterceptorEvents.BeforeResolve, {
+        token: _token,
+        context: _context,
+        container: this,
+      }) ?? {};
+
     // get registrations in this container
     const registrations =
-      context.provide?.get(token) || this.registration.get(token);
+      (context.provide?.get(token) as ProviderRegistration<T>[]) ||
+      this.registration.get(token);
 
     if (!registrations?.length) {
       // if this container has no resolution, recursively get in parent container
       if (context.resolveParent && this.parentContainer) {
-        return this.parentContainer.resolve(token, context as any); // TODO: remove any here
+        return this.parentContainer.resolve(token, context); // TODO: remove any here
       }
 
       // if this token itself is a constructor, use itself as class provider
@@ -229,6 +270,13 @@ export class Container implements IContainer {
       }
       throw new NoProviderFoundError(token);
     }
+
+    this.interceptorRegistry.dispatch<T>(InterceptorEvents.AfterResolve, {
+      token,
+      context,
+      resolution: registrations,
+      container: this,
+    });
 
     return this.resolveFromRegistrations(token, registrations, context);
   }

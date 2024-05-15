@@ -1,6 +1,9 @@
 # 🍫 Youmiya
 
-> ⚠️ Warning: This project is experimental now and still under construction.
+> 💡 Package `youmiya` is a set of atom packages of `@youmiya/*`, including:
+>
+> - `@youmiya/core`
+> - `@youmiya/modular`
 
 `Youmiya` is a simple dependency injection (DI) library for Typescript with modern features:
 

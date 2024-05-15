@@ -12,5 +12,6 @@ export type { InjectionTokenType } from './common';
 export type { AsyncModule } from './modules';
 
 export * from './containers';
-export * from './providers';
 export * from './decorators';
+export * from './interceptors/types';
+export * from './providers';

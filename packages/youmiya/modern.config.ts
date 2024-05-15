@@ -5,14 +5,5 @@ export default defineConfig({
   buildPreset: 'npm-library',
   buildConfig: {
     autoExternal: false,
-    copy: {
-      patterns: [
-        {
-          context: __dirname,
-          from: '../../README.md',
-          to: '../',
-        },
-      ],
-    },
   },
 });
