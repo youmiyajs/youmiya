@@ -174,6 +174,7 @@ export class Container implements IContainer {
         instance.dispose?.();
       }
     });
+    this.instanceMap.clear();
 
     this.resolveInProgress.clear();
 
@@ -272,7 +273,7 @@ export class Container implements IContainer {
     context: ResolutionContext,
   ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined {
     const { provider, options } = registration;
-    const { lazyable = false } = options ?? {};
+    const { lazyable = true } = options ?? {};
 
     const nextContext: ResolutionContext = {
       ...context,
@@ -285,6 +286,7 @@ export class Container implements IContainer {
       // if target is a laziable class provider, we returns an instance.
       if (
         lazyable &&
+        context.lazy &&
         getProviderType(provider) === ProviderTypeEnum.ClassProvider
       ) {
         return this.createLazyModuleLoader(token, registration, nextContext);
@@ -299,7 +301,7 @@ export class Container implements IContainer {
     try {
       switch (getProviderType(provider)) {
         case ProviderTypeEnum.ClassProvider:
-          return lazyable
+          return lazyable && context.lazy
             ? this.createLazyModuleLoader(token, registration, nextContext)
             : this.instantiateClass(registration, nextContext);
 

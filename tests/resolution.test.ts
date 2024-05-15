@@ -2,14 +2,10 @@ import { describe, expect, it, beforeEach } from 'vitest';
 
 import {
   AsyncModule,
-  InjectionTokenInvalidError,
-  NoReflectMetadataSupportError,
-  UnsupportedProviderError,
   inject,
   injectable,
   rootContainer,
 } from '../src';
-import { NoProviderFoundError } from '@/common';
 
 describe('[Basic] test register & resolution features', () => {
   beforeEach(() => rootContainer.dispose(true));
@@ -98,5 +94,22 @@ describe('[Basic] test register & resolution features', () => {
     expect(res.length).toBe(2);
     expect(res[0]).toBeInstanceOf(A);
     expect(res[1]).toBeInstanceOf(B);
+  });
+
+  it('should returns a lazy instance when resolve is set to lazy', () => {
+    let counter = 0;
+    @injectable() class A {
+      constructor() {
+        counter++;
+      }
+    }
+    @injectable() class B {
+      constructor(@inject(A, { lazy: true }) public a: A) {}
+    }
+
+    const b = rootContainer.resolve(B);
+    expect(counter).toBe(0);
+    expect(b.a).toBeInstanceOf(A);
+    expect(counter).toBe(1);
   });
 });
