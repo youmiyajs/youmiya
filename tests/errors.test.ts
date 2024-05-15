@@ -75,7 +75,7 @@ describe('[Errors] test scenes that should throw error', () => {
 
     @injectable({ token: 'B' })
     class B {
-      constructor(@lazy() @inject('A') public a: A) {}
+      constructor(@lazy @inject('A') public a: A) {}
     }
 
     const b = rootContainer.resolve(B);
@@ -90,12 +90,12 @@ describe('[Errors] test scenes that should throw error', () => {
       echo() {
         console.log('A');
       }
-      @inject('B') @lazy() public b2: unknown;
+      @inject('B') @lazy public b2: unknown;
     }
 
     @injectable({ token: 'B' })
     class B {
-      constructor(@inject('A') @lazy() public a: A) {
+      constructor(@inject('A') @lazy public a: A) {
         a.echo();
       }
     }
