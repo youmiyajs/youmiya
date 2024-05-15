@@ -107,7 +107,10 @@ export class Container implements IContainer {
     };
 
     this.registration.register(registerToken, registration);
-    return () => this.registration.unregister(registerToken, registration);
+    return () => {
+      this.instanceMap.delete(registration);
+      this.registration.unregister(registerToken, registration);
+    };
   }
 
   public resolve<T>(

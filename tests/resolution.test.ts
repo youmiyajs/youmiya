@@ -6,6 +6,7 @@ import {
   injectable,
   rootContainer,
 } from '../src';
+import { NoProviderFoundError } from '@/common';
 
 describe('[Basic] test register & resolution features', () => {
   beforeEach(() => rootContainer.dispose(true));
@@ -111,5 +112,14 @@ describe('[Basic] test register & resolution features', () => {
     expect(counter).toBe(0);
     expect(b.a).toBeInstanceOf(A);
     expect(counter).toBe(1);
+  });
+
+  it('should invoke registration if called the callback of register() returned', () => {
+    class A {}
+    const unregister = rootContainer.register('A').toClass(A);
+    expect(rootContainer.resolve('A')).toBeInstanceOf(A);
+    unregister();
+    unregister(); // should do nothing
+    expect(() => rootContainer.resolve('A')).toThrowError(NoProviderFoundError);
   });
 });
