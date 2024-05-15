@@ -1,3 +1,4 @@
+import { ResolutionSource } from '..';
 import { InjectionTokenType } from './InjectionToken';
 
 export class UnsupportedProviderError extends Error {
@@ -24,5 +25,27 @@ export class InjectionTokenInvalidError extends Error {
 export class NoProviderFoundError extends Error {
   constructor(public readonly token: InjectionTokenType<unknown>) {
     super(`No provider founded for token ${token.toString()}`);
+  }
+}
+
+export class CircularDependencyDetectedError extends Error {
+  constructor(
+    public readonly currentToken: InjectionTokenType<unknown>,
+    public readonly resolutionSource: ResolutionSource,
+    readonly resolveGraph: Map<InjectionTokenType<unknown>, ResolutionSource>,
+  ) {
+    let path = `${String(currentToken)}`;
+    let token: InjectionTokenType<unknown> | undefined =
+      resolutionSource.sourceToken;
+    while (token !== undefined) {
+      path += `  <- ${String(token)}`;
+      token = resolveGraph.get(token)?.sourceToken;
+    }
+
+    super(
+      `Circular dependency detected while resolving token ${String(
+        currentToken,
+      )}.\n\nThe above error is emitted from the following resolution path: \n${path}`,
+    );
   }
 }
