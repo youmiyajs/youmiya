@@ -78,6 +78,37 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@18.19.33)(terser@5.19.2)
 
+  packages/youmiya:
+    dependencies:
+      '@youmiya/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@modern-js/eslint-config':
+        specifier: 2.49.3
+        version: 2.49.3(typescript@5.0.4)
+      '@modern-js/module-tools':
+        specifier: 2.49.3
+        version: 2.49.3(eslint@8.57.0)(typescript@5.0.4)
+      '@types/node':
+        specifier: ~16.11.7
+        version: 16.11.68
+      husky:
+        specifier: ~8.0.1
+        version: 8.0.3
+      lint-staged:
+        specifier: ~13.1.0
+        version: 13.1.4(enquirer@2.4.1)
+      prettier:
+        specifier: ~2.8.1
+        version: 2.8.8
+      rimraf:
+        specifier: ~3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ~5.0.4
+        version: 5.0.4
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -1369,6 +1400,16 @@ packages:
       typescript:
         optional: true
 
+  '@modern-js/module-tools@2.49.3':
+    resolution: {integrity: sha512-E2n95pKforlYAeGBVcJGo+E8fTG8u8eISlnAXCQJk+PGRIDjrgB1pRH/glHoy4MMzuGyNqltRhxjtvZZY5TxGw==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      typescript: ^4 || ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@modern-js/monorepo-tools@2.49.3':
     resolution: {integrity: sha512-Ws4iSJbn6+xiriK/1so6Gvz1tt2C84j7Wigy4JUgKd5IZhBT5osZDdhPMmRAqXLX9Qus98soyRpRHRLijg3tOw==}
     hasBin: true
@@ -1475,6 +1516,9 @@ packages:
 
   '@modern-js/types@2.49.2':
     resolution: {integrity: sha512-mnrTQYVQEyEzVAVs3lPmg231atuopPRpTUPzjoDxPgcsmMsjkr8jD+JChDXkifT/Nx1eER6nMXNC3dX20YQMaA==}
+
+  '@modern-js/types@2.49.3':
+    resolution: {integrity: sha512-Q++A4TqsJyB0dXuYkYd4kNzGs8XYrpB/on8MHrY6o1c8WnMPJaH2uZ/OXTaTA3/WZzaztxM0VC6gWjDsl1LXpQ==}
 
   '@modern-js/utils@2.49.2':
     resolution: {integrity: sha512-Xm4Zg17bbKWT23I0FEJ7sED2w8CMzTMvydaYsl5IUDoHTqo4iOOVm1Q+o+iYNBICclLZD9UuNCou7xpBOSPNoQ==}
@@ -1869,6 +1913,9 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
+
+  '@types/node@16.11.68':
+    resolution: {integrity: sha512-JkRpuVz3xCNCWaeQ5EHLR/6woMbHZz/jZ7Kmc63AkU+1HxnoUugzSWMck7dsR4DvNYX8jp9wTi9K7WvnxOIQZQ==}
 
   '@types/node@18.19.33':
     resolution: {integrity: sha512-NR9+KrpSajr2qBVp/Yt5TU/rp+b5Mayi3+OlMlcg2cVCfRmcG5PWZ7S4+MG9PZ5gWBoc9Pd0BKSRViuBCRPu0A==}
@@ -5934,6 +5981,42 @@ snapshots:
       - eslint
       - supports-color
 
+  '@modern-js/module-tools@2.49.3(eslint@8.57.0)(typescript@5.0.4)':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@ast-grep/napi': 0.16.0
+      '@babel/core': 7.24.5
+      '@babel/types': 7.24.5
+      '@modern-js/core': 2.49.3
+      '@modern-js/plugin': 2.49.3
+      '@modern-js/plugin-changeset': 2.49.3
+      '@modern-js/plugin-i18n': 2.49.3
+      '@modern-js/plugin-lint': 2.49.3(eslint@8.57.0)
+      '@modern-js/swc-plugins': 0.6.6(@swc/helpers@0.5.3)
+      '@modern-js/types': 2.49.3
+      '@modern-js/utils': 2.49.3
+      '@rollup/pluginutils': 4.1.1
+      '@swc/helpers': 0.5.3
+      convert-source-map: 1.8.0
+      enhanced-resolve: 5.12.0
+      esbuild: 0.19.2
+      magic-string: 0.30.5
+      postcss: 8.4.38
+      postcss-modules: 4.3.0(postcss@8.4.38)
+      safe-identifier: 0.4.2
+      source-map: 0.7.4
+      style-inject: 0.3.0
+      sucrase: 3.29.0
+      tapable: 2.2.1
+      terser: 5.19.2
+      tsconfig-paths-webpack-plugin: 4.1.0
+    optionalDependencies:
+      typescript: 5.0.4
+    transitivePeerDependencies:
+      - debug
+      - eslint
+      - supports-color
+
   '@modern-js/monorepo-tools@2.49.3(@types/node@18.19.33)(eslint@8.57.0)':
     dependencies:
       '@modern-js/core': 2.49.3
@@ -6073,6 +6156,8 @@ snapshots:
   '@modern-js/tsconfig@2.49.3': {}
 
   '@modern-js/types@2.49.2': {}
+
+  '@modern-js/types@2.49.3': {}
 
   '@modern-js/utils@2.49.2':
     dependencies:
@@ -6287,7 +6372,7 @@ snapshots:
   '@rsbuild/shared@0.6.6(@swc/helpers@0.5.3)':
     dependencies:
       '@rspack/core': 0.6.3(@swc/helpers@0.5.3)
-      caniuse-lite: 1.0.30001615
+      caniuse-lite: 1.0.30001618
       postcss: 8.4.38
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -6467,6 +6552,8 @@ snapshots:
   '@types/node@12.20.24': {}
 
   '@types/node@12.20.55': {}
+
+  '@types/node@16.11.68': {}
 
   '@types/node@18.19.33':
     dependencies:

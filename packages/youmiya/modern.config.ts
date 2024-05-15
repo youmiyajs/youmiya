@@ -4,6 +4,7 @@ export default defineConfig({
   plugins: [moduleTools()],
   buildPreset: 'npm-library',
   buildConfig: {
+    autoExternal: false,
     copy: {
       patterns: [
         {
