@@ -6,6 +6,7 @@ import {
   ResolutionOptions,
   ResolutionContext,
   ResolutionSource,
+  ResetResolutionOptions,
 } from './types';
 import {
   getClassDescriptorsSet,
@@ -306,7 +307,7 @@ export class Container implements IContainer {
         case ProviderTypeEnum.ClassProvider:
           return lazyable && context.lazy
             ? this.createLazyModuleLoader(token, registration, nextContext)
-            : this.instantiateClass(registration, nextContext);
+            : this.instantiateClass(token, registration, nextContext);
 
         case ProviderTypeEnum.ValueProvider:
           return (provider as ValueProvider<T>).useValue;
@@ -344,6 +345,7 @@ export class Container implements IContainer {
   }
 
   private instantiateClass<T>(
+    token: InjectionTokenType<T>,
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ) {
@@ -353,13 +355,16 @@ export class Container implements IContainer {
 
     const constructorDependencies: any[] = [];
     descriptorSet.constructors.forEach(descriptor => {
+      const nextContext = {
+        ...context,
+        ...ResetResolutionOptions,
+        ...descriptor.options,
+        ...descriptorSet.options[descriptor.index],
+        sourceToken: token,
+      };
       constructorDependencies[descriptor.index] = this.resolve(
         descriptor.token,
-        {
-          ...descriptor.options,
-          ...descriptorSet.options[descriptor.index],
-          ...context,
-        },
+        nextContext,
       );
     });
 
@@ -369,11 +374,17 @@ export class Container implements IContainer {
     );
 
     descriptorSet.properties.forEach(descriptor => {
-      (result as any)[descriptor.key] = this.resolve(descriptor.token, {
+      const nextContext = {
+        ...context,
+        ...ResetResolutionOptions,
         ...descriptor.options,
         ...descriptorSet.options[descriptor.key],
-        ...context,
-      });
+        sourceToken: token,
+      };
+      (result as any)[descriptor.key] = this.resolve(
+        descriptor.token,
+        nextContext,
+      );
     });
 
     if (context.useCache || registration.options?.singleton) {
@@ -405,7 +416,7 @@ export class Container implements IContainer {
         );
       }
 
-      localCached = this.instantiateClass(registration, context);
+      localCached = this.instantiateClass(token, registration, context);
       return localCached as object;
     };
 

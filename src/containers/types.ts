@@ -26,6 +26,13 @@ export interface ResolutionOptions<
   provide?: Map<InjectionTokenType<unknown>, ProviderRegistration<unknown>[]>;
 }
 
+export const ResetResolutionOptions: Partial<ResolutionOptions> = {
+  optional: false,
+  multiple: false,
+  async: false,
+  lazy: false,
+};
+
 type Token<T> = InjectionTokenType<T>;
 
 type Opt<
