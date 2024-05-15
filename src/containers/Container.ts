@@ -260,7 +260,9 @@ export class Container implements IContainer {
     const cachedInstance = this.instanceMap.get(registration);
     const shouldUseCache =
       cachedInstance &&
-      (context.useCache ||
+      context.useCache &&
+      (getProviderType(registration.provider) !==
+        ProviderTypeEnum.ClassProvider ||
         isGlobalSingleton(registration) ||
         (isScopedSingleton(registration) && context.container === this));
 
