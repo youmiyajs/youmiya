@@ -5,6 +5,7 @@ import {
   ProviderRegistration,
   ResolutionOptions,
   ResolutionContext,
+  ResolutionSource,
 } from './types';
 import {
   getClassDescriptorsSet,
@@ -22,6 +23,7 @@ import {
   DECORATOR_BIND_TOKEN,
   ProviderIdentifier,
   isProviderIdentifier,
+  CircularDependencyDetectedError,
 } from '@/common';
 import {
   IProvider,
@@ -47,6 +49,11 @@ export class Container implements IContainer {
 
   private readonly instanceMap: Map<ProviderRegistration<unknown>, unknown> =
     new Map();
+
+  private readonly resolveInProgress: Map<
+    InjectionTokenType<unknown>,
+    ResolutionSource
+  > = new Map();
 
   constructor(
     public readonly identifier: string,
@@ -168,6 +175,8 @@ export class Container implements IContainer {
       }
     });
 
+    this.resolveInProgress.clear();
+
     // dispose registration
     if (clearRegistration) {
       this.registration.clear();
@@ -198,6 +207,7 @@ export class Container implements IContainer {
       // if this token itself is a constructor, use itself as class provider
       if (isConstructor(token)) {
         return this.resolveFromRegistrations(
+          token,
           [
             {
               provider: { useClass: token },
@@ -215,26 +225,29 @@ export class Container implements IContainer {
       throw new NoProviderFoundError(token);
     }
 
-    return this.resolveFromRegistrations(registrations, context);
+    return this.resolveFromRegistrations(token, registrations, context);
   }
 
   private resolveFromRegistrations<T>(
+    token: InjectionTokenType<T>,
     registrations: readonly ProviderRegistration<T>[],
     context: ResolutionContext,
   ) {
     if (!context.multiple) {
       return this.resolveSingleRegistration(
+        token,
         registrations[registrations.length - 1],
         context,
       );
     }
 
     return registrations.map(registration =>
-      this.resolveSingleRegistration(registration, context),
+      this.resolveSingleRegistration(token, registration, context),
     );
   }
 
   private resolveSingleRegistration<T>(
+    token: InjectionTokenType<T>,
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ) {
@@ -250,36 +263,66 @@ export class Container implements IContainer {
       return cachedInstance;
     }
 
-    return this.resolveProvider(registration, context);
+    return this.resolveProvider(token, registration, context);
   }
 
   private resolveProvider<T>(
+    token: InjectionTokenType<T>,
     registration: ProviderRegistration<T>,
     context: ResolutionContext,
   ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined {
     const { provider, options } = registration;
     const { lazyable = false } = options ?? {};
 
-    switch (getProviderType(provider)) {
-      case ProviderTypeEnum.ClassProvider:
-        return lazyable
-          ? this.createLazyModuleLoader(registration, context)
-          : this.instantiateClass(registration, context);
+    const nextContext: ResolutionContext = {
+      ...context,
+      sourceToken: token,
+    };
 
-      case ProviderTypeEnum.ValueProvider:
-        return (provider as ValueProvider<T>).useValue;
+    const currentResolving = this.markResolutionStart(token, context);
+    if (currentResolving) {
+      // circular dependencies is detected in current registration
+      // if target is a laziable class provider, we returns an instance.
+      if (
+        lazyable &&
+        getProviderType(provider) === ProviderTypeEnum.ClassProvider
+      ) {
+        return this.createLazyModuleLoader(registration, nextContext);
+      }
+      throw new CircularDependencyDetectedError(
+        token,
+        currentResolving,
+        this.resolveInProgress,
+      );
+    }
 
-      case ProviderTypeEnum.AsyncProvider:
-        return this.createAsyncModuleLoader(registration, context);
+    try {
+      switch (getProviderType(provider)) {
+        case ProviderTypeEnum.ClassProvider:
+          return lazyable
+            ? this.createLazyModuleLoader(registration, nextContext)
+            : this.instantiateClass(registration, nextContext);
 
-      case ProviderTypeEnum.FactoryProvider:
-        return this.instantiateFactory(registration, context);
+        case ProviderTypeEnum.ValueProvider:
+          return (provider as ValueProvider<T>).useValue;
 
-      case ProviderTypeEnum.TokenProvider:
-        return this.resolve((provider as TokenProvider<T>).useToken, context);
+        case ProviderTypeEnum.AsyncProvider:
+          return this.createAsyncModuleLoader(registration, nextContext);
 
-      default:
-        throw new UnsupportedProviderError(provider);
+        case ProviderTypeEnum.FactoryProvider:
+          return this.instantiateFactory(registration, nextContext);
+
+        case ProviderTypeEnum.TokenProvider:
+          return this.resolve(
+            (provider as TokenProvider<T>).useToken,
+            nextContext,
+          );
+
+        default:
+          throw new UnsupportedProviderError(provider);
+      }
+    } finally {
+      this.markResolutionComplete(token);
     }
   }
 
@@ -387,6 +430,25 @@ export class Container implements IContainer {
     }
 
     return asyncModuleLoader;
+  }
+
+  private markResolutionStart(
+    token: InjectionTokenType<unknown>,
+    context: ResolutionContext,
+  ) {
+    if (this.resolveInProgress.has(token)) {
+      return this.resolveInProgress.get(token);
+    }
+    this.resolveInProgress.set(token, {
+      container: this,
+      rootToken: context.rootToken,
+      sourceToken: context.sourceToken,
+    });
+    return undefined;
+  }
+
+  private markResolutionComplete(token: InjectionTokenType<unknown>) {
+    this.resolveInProgress.delete(token);
   }
 }
 

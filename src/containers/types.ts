@@ -93,4 +93,11 @@ export interface IContainer {
 export type ResolutionContext = ResolutionOptions & {
   container: IContainer;
   rootToken: InjectionTokenType<unknown>;
+  sourceToken?: InjectionTokenType<unknown>;
 };
+
+export interface ResolutionSource {
+  container: IContainer;
+  rootToken: InjectionTokenType<unknown>;
+  sourceToken?: InjectionTokenType<unknown>;
+}
