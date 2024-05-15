@@ -1,61 +1,36 @@
 {
-  "name": "youmiya",
-  "description": "Simple modern dependency injection container.",
-  "version": "0.1.5",
-  "types": "./dist/types/index.d.ts",
-  "main": "./dist/lib/index.js",
-  "module": "./dist/es/index.js",
-  "files": [
-    "README.md",
-    "LICENSE",
-    "package.json",
-    "dist"
-  ],
+  "name": "@youmiya/monorepo",
+  "private": true,
   "scripts": {
-    "dev": "modern dev",
-    "build": "modern build",
-    "build:watch": "modern build -w",
-    "reset": "rimraf ./**/node_modules",
-    "lint": "modern lint",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test:run",
+    "new": "modern new",
+    "reset": "modern clear",
     "change": "modern change",
     "bump": "modern bump",
-    "pre": "modern pre",
+    "prepare": "husky install",
     "change-status": "modern change-status",
-    "gen-release-note": "modern gen-release-note",
     "release": "modern release",
-    "new": "modern new",
+    "lint": "modern lint",
     "upgrade": "modern upgrade",
-    "test": "vitest -c config/vitest.config.mts",
-    "test:run": "vitest run -c config/vitest.config.mts --coverage"
+    "nx": "nx"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "node --max_old_space_size=8192 ./node_modules/eslint/bin/eslint.js --fix --color --cache --quiet"
     ]
   },
-  "eslintIgnore": [
-    "node_modules/",
-    "dist/"
-  ],
   "devDependencies": {
-    "@modern-js/eslint-config": "2.49.2",
-    "@modern-js/module-tools": "2.49.2",
-    "@types/node": "~16.11.7",
-    "@vitest/coverage-v8": "^1.6.0",
-    "husky": "~8.0.1",
+    "@modern-js/monorepo-tools": "2.49.3",
+    "@modern-js/eslint-config": "2.49.3",
+    "@modern-js/tsconfig": "2.49.3",
+    "@modern-js-app/eslint-config": "2.49.3",
     "lint-staged": "~13.1.0",
-    "prettier": "~2.8.1",
-    "reflect-metadata": "^0.2.2",
-    "rimraf": "~3.0.2",
-    "tsx": "^4.10.2",
-    "typescript": "~5.0.4",
-    "vite-plugin-swc-transform": "^0.3.1",
-    "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.6.0"
-  },
-  "sideEffects": [],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "prettier": "^2.6.2",
+    "husky": "^8.0.0",
+    "nx": "19.0.3"
   }
 }

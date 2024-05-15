@@ -1,6 +1,5 @@
-import { moduleTools, defineConfig } from '@modern-js/module-tools';
+import { monorepoTools } from '@modern-js/monorepo-tools';
 
-export default defineConfig({
-  plugins: [moduleTools()],
-  buildPreset: 'npm-library',
-});
+export default {
+  plugins: [monorepoTools()],
+}
