@@ -44,12 +44,12 @@ describe('[Decorator] test util decorators', () => {
 
     class B {
       constructor(
-        @inject('C') @optional() public c: unknown,
-        @optional() @inject('D') public d: unknown,
+        @inject('C') @optional public c: unknown,
+        @optional @inject('D') public d: unknown,
       ) {}
 
-      @inject('C') @optional() public c2: unknown;
-      @optional() @inject('D') public d2: unknown;
+      @inject('C') @optional public c2: unknown;
+      @optional @inject('D') public d2: unknown;
     }
 
     const b = rootContainer.resolve(B);
@@ -65,12 +65,12 @@ describe('[Decorator] test util decorators', () => {
 
     class C {
       constructor(
-        @inject('Foo') @multiple() public foo1: unknown[],
-        @multiple() @inject('Foo') public foo2: unknown[],
+        @inject('Foo') @multiple public foo1: unknown[],
+        @multiple @inject('Foo') public foo2: unknown[],
       ) {}
 
-      @multiple() @inject('Foo') public foo3!: unknown[];
-      @inject('Foo') @multiple() public foo4!: unknown[];
+      @multiple @inject('Foo') public foo3!: unknown[];
+      @inject('Foo') @multiple public foo4!: unknown[];
     }
 
     const c = rootContainer.resolve(C);
