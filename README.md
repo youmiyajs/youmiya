@@ -10,10 +10,10 @@
 - Support async module injection
 - Supports hierarchical containers
 - Circular dependency detection & workaround
+- Register / resolution interceptors
 
 And more features are on the way:
 
-- Interceptors like tsyringe
 - Injection transform
 - Modular system
 - Idle-time load & instatiation

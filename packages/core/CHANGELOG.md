@@ -1,4 +1,4 @@
-# youmiya
+# @youmiya/core
 
 ## 0.1.6
 
