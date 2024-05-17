@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.9
+
+### Patch Changes
+
+- Add autoInject() decorator
+
 ## 0.1.8
 
 ### Patch Changes
