@@ -1,0 +1,18 @@
+{
+  "name": "@youmiya/example-decorator-style",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "rimraf dist && tsc && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@youmiya/core": "workspace:*"
+  },
+  "devDependencies": {
+    "reflect-metadata": "^0.2.2"
+  }
+}

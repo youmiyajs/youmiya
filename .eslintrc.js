@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   extends: ['@modern-js'],
   parserOptions: {
-    project: ['./packages/*/tsconfig.json'],
+    project: ['./packages/*/tsconfig.json', './examples/*/tsconfig.json'],
   },
   rules: {
     'no-param-reassign': ['off'],

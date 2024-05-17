@@ -32,6 +32,25 @@ importers:
       prettier:
         specifier: ^2.6.2
         version: 2.8.8
+      rimraf:
+        specifier: ~3.0.2
+        version: 3.0.2
+      tsx:
+        specifier: ^4.10.2
+        version: 4.10.2
+      typescript:
+        specifier: ~5.0.4
+        version: 5.0.4
+
+  examples/decorator-style:
+    dependencies:
+      '@youmiya/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
 
   packages/core:
     devDependencies:

@@ -11,6 +11,7 @@
 - Supports hierarchical containers
 - Circular dependency detection & workaround
 - Register / resolution interceptors
+- 100% code coverage
 
 And more features are on the way:
 
@@ -20,32 +21,36 @@ And more features are on the way:
 
 ## Getting Started
 
-### Basic Usage (decorator style)
+### Basic Usage (decorator metadata style)
 
-`reflect-metadata` polyfill is needed for decorator style.
+`reflect-metadata` polyfill is needed for this style.
 
 ```ts
-import { injectable, inject, rootContainer } from 'youmiya';
+// First imports youmiya and `reflect-metadata`.
+import 'reflect-metadata';
+import { injectable, rootContainer, autoInject } from 'youmiya';
 
+// Then we define a class `Guitar` and mark it as `injectable`.
 @injectable()
-class Foo {
-  echo() {
-    console.log('foo');
+class Guitar {
+  play() {
+    return 'playing guitar';
   }
 }
 
-@injectable()
-class Bar {
-  constructor(@inject() private readonly foo: Foo) {}
+// We're gonna to create a class `Anon` that plays Guitar.
+// Constructing `Guitar` manually is not required because `Guitar` is injectable and `Anon` is `autoInject()` decorated.
+@autoInject()
+class Anon {
+  constructor(private guitar?: Guitar) {}
 
-  echo() {
-    this.foo.echo();
-    console.log('bar');
+  play() {
+    console.log('Anon is', this.guitar!.play());
   }
 }
 
-const bar = rootContainer.resolve(Bar);
-bar.echo(); // foobar
+// Let's play Haruhikage!
+(new Anon()).play(); // Anon is playing guitar
 ```
 
 ### Basic Usage (interface-oriented style)
