@@ -16,3 +16,5 @@ export * from './decorators';
 export * from './interceptors/types';
 
 export * from './providers';
+
+export { unwrapInjectionToken, isDisposable } from './utils';

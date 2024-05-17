@@ -12,6 +12,12 @@ export interface ProviderRegistration<T> {
   options?: ProviderOptions;
 }
 
+export interface GettableProviderSource {
+  get<T>(
+    token: InjectionTokenType<T>,
+  ): readonly ProviderRegistration<T>[] | undefined;
+}
+
 export interface ResolutionOptions<
   Optional extends boolean = boolean,
   Multiple extends boolean = boolean,
@@ -23,7 +29,8 @@ export interface ResolutionOptions<
   multiple?: Multiple;
   async?: Async;
   lazy?: boolean;
-  provide?: Map<InjectionTokenType<unknown>, ProviderRegistration<unknown>[]>;
+  prefers?: GettableProviderSource;
+  alternative?: GettableProviderSource;
 }
 
 export const ResetResolutionOptions: Partial<ResolutionOptions> = {
@@ -92,6 +99,10 @@ export interface IContainer {
     token: Token<T>,
     options?: ResolutionOptions,
   ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined;
+
+  getRegistration<T>(
+    token: Token<T>,
+  ): readonly ProviderRegistration<T>[] | undefined;
 
   fork(identifier: string): IContainer;
 
