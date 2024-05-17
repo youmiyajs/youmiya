@@ -1,0 +1,30 @@
+{
+  "name": "@youmiya/react",
+  "version": "0.1.0",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "module": "./dist/es/index.js",
+  "scripts": {
+    "build": "modern build",
+    "build:watch": "modern build -w",
+    "new": "modern new",
+    "upgrade": "modern upgrade"
+  },
+  "peerDependencies": {
+    "@youmiya/core": "workspace:*",
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.2",
+    "@youmiya/core": "workspace:*",
+    "react": "^18.3.1"
+  },
+  "optionalDependencies": {
+    "@youmiya/modular": "workspace:^"
+  },
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
