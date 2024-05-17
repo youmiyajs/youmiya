@@ -1,0 +1,31 @@
+{
+  "name": "@youmiya/modular",
+  "version": "0.1.0",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "module": "./dist/es/index.js",
+  "scripts": {
+    "build": "modern build",
+    "build:watch": "modern build -w",
+    "new": "modern new",
+    "test": "vitest -c config/vitest.config.mts",
+    "test:run": "vitest run -c config/vitest.config.mts --coverage"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "dist"
+  ],
+  "devDependencies": {
+    "@youmiya/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@youmiya/core": "workspace:*"
+  },
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
