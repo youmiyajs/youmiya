@@ -11,12 +11,12 @@
 - Supports hierarchical containers
 - Circular dependency detection & workaround
 - Register / resolution interceptors
+- Modular system like NestJS
 - 100% code coverage
 
 And more features are on the way:
 
 - Injection transform
-- Modular system
 - Idle-time load & instatiation
 
 ## Getting Started
