@@ -46,5 +46,5 @@ describe('[Child Container] test hierarchical containers', () => {
     const b = childContainer.resolve(B);
 
     expect(a === b.a).toBeFalsy();
-  })
+  });
 });

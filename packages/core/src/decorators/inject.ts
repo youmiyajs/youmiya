@@ -18,9 +18,11 @@ export function inject<T>(
     // constructor params decorator
     if (parameterIndex !== undefined) {
       if (!token && checkReflectMetadata()) {
-        const constructorParams =
-          Reflect.getMetadata('design:paramtypes', target) || [];
-        token = constructorParams[parameterIndex];
+        const constructorParams = Reflect.getMetadata(
+          'design:paramtypes',
+          target,
+        );
+        token = constructorParams?.[parameterIndex];
       }
 
       if (!token) {

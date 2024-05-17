@@ -44,7 +44,10 @@ export class InterceptorRegistry {
     if (!eventSet) {
       return;
     }
-    eventSet.filter(item => item !== handler);
+    this.registration.set(
+      event,
+      eventSet.filter(item => item !== handler),
+    );
   }
 
   public dispatch<T>(
