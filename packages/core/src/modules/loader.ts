@@ -17,13 +17,13 @@ export type LazyModule<T> = T & {
 
 const REFLECT_METHODS = [
   'get',
-  'apply',
   'getPrototypeOf',
+  'set',
+  'apply',
   'setPrototypeOf',
   'getOwnPropertyDescriptor',
   'defineProperty',
   'has',
-  'set',
   'deleteProperty',
   'construct',
   'ownKeys',
@@ -54,6 +54,8 @@ export function createLazyModuleLoader<T>(getModule: () => object): T {
 export function createAsyncModuleLoader<T>(
   loadModule: () => Promise<object>,
 ): AsyncModule<T> {
+  // this is a function for proxy so it does not need to be tested
+  /* v8 ignore next 2 */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const noop = (() => {}) as AsyncModule<T>;
 

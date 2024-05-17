@@ -33,10 +33,6 @@ export class RegistrationMap {
     if (!currentRegistration) {
       return;
     }
-    if (!registration) {
-      this.map.delete(token);
-      return;
-    }
     const nextRegistration = currentRegistration.filter(
       reg => reg !== registration,
     );

@@ -212,7 +212,6 @@ export class Container implements IContainer {
       }
     });
     this.instanceMap.clear();
-
     this.resolveInProgress.clear();
 
     // dispose registration
@@ -306,13 +305,16 @@ export class Container implements IContainer {
   ) {
     // use cached values
     const cachedInstance = this.instanceMap.get(registration);
+    const isClassProvider =
+      getProviderType(registration.provider) === ProviderTypeEnum.ClassProvider;
+    const isSingletonProvider =
+      isGlobalSingleton(registration) ||
+      (isScopedSingleton(registration) && context.container === this);
+
     const shouldUseCache =
       cachedInstance &&
-      context.useCache &&
-      (getProviderType(registration.provider) !==
-        ProviderTypeEnum.ClassProvider ||
-        isGlobalSingleton(registration) ||
-        (isScopedSingleton(registration) && context.container === this));
+      ((context.useCache && !isClassProvider) ||
+        (isClassProvider && isSingletonProvider));
 
     if (shouldUseCache && cachedInstance) {
       return cachedInstance;
@@ -437,7 +439,11 @@ export class Container implements IContainer {
       );
     });
 
-    if (context.useCache || registration.options?.singleton) {
+    if (
+      context.useCache ||
+      isGlobalSingleton(registration) ||
+      isScopedSingleton(registration)
+    ) {
       this.instanceMap.set(registration, result);
     }
 

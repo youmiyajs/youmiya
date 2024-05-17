@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { createProviderIdentifier, inject, injectable, multiple, optional, rootContainer } from '../src';
+import { Container, createProviderIdentifier, inject, injectable, multiple, optional, rootContainer } from '../src';
 import { NoProviderFoundError } from '@/common';
 
 describe('[Decorator] test util decorators', () => {
