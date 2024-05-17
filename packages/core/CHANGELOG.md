@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.10
+
+### Patch Changes
+
+- 0ecd1a8: Support modular and react binding
+
 ## 0.1.9
 
 ### Patch Changes
