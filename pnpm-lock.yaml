@@ -45,16 +45,6 @@ importers:
         specifier: ~5.0.4
         version: 5.0.4
 
-  examples/decorator-style:
-    dependencies:
-      '@youmiya/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-    devDependencies:
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-
   examples/decorator-style-with-reflect-metadata:
     dependencies:
       '@youmiya/core':

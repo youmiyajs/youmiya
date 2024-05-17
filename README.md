@@ -1,5 +1,7 @@
 # 🍫 Youmiya
 
+![build-and-test-badge](https://github.com/youmiyajs/youmiya/actions/workflows/build-and-test.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/youmiyajs/youmiya/badge.svg?branch=main)](https://coveralls.io/github/youmiyajs/youmiya?branch=main)
+
 `Youmiya` is a simple dependency injection (DI) library for Typescript with modern features:
 
 - Supports both decorator style and interface-oriented style

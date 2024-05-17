@@ -1,4 +1,4 @@
-name: 🔨Build & 🧪Test
+name: Build & Test
 
 on:
   push:
@@ -49,3 +49,5 @@ jobs:
 
       - name: Report coverage
         run: pnpm report:coverage
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
