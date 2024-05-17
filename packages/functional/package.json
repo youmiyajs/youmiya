@@ -1,0 +1,25 @@
+{
+  "name": "@youmiya/functional",
+  "version": "0.1.0",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "module": "./dist/es/index.js",
+  "scripts": {
+    "build": "modern build",
+    "build:watch": "modern build -w",
+    "new": "modern new",
+    "upgrade": "modern upgrade"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@youmiya/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@youmiya/core": "workspace:*"
+  },
+  "sideEffects": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
