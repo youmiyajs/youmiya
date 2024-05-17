@@ -1,5 +1,5 @@
 {
-  "name": "@youmiya-examples/decorator-style-with-metadata",
+  "name": "@youmiya-examples/decorator-style-without-metadata",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",

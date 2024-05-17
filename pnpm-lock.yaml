@@ -55,6 +55,26 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2
 
+  examples/decorator-style-without-reflect-metadata:
+    dependencies:
+      '@youmiya/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+
+  examples/provider-identifier-style:
+    dependencies:
+      '@youmiya/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+
   packages/core:
     devDependencies:
       '@modern-js/eslint-config':

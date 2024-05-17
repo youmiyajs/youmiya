@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": ["DOM", "ESNext"],
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "outDir": "./dist"
+  },
+  "exclude": ["**/node_modules"]
+}

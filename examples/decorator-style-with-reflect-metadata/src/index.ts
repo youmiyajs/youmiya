@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { injectable, rootContainer, autoInject } from '@youmiya/core';
+import { autoInject, injectable, rootContainer } from '@youmiya/core';
 
 @injectable()
 class Guitar {
@@ -8,7 +8,7 @@ class Guitar {
   }
 }
 
-@autoInject()
+@injectable()
 class Anon {
   constructor(private guitar: Guitar) {}
 
@@ -18,3 +18,15 @@ class Anon {
 }
 
 rootContainer.resolve(Anon).play(); // Anon is playing guitar
+
+// Or you can use @autoInject() decorator...
+@autoInject()
+class Rana {
+  constructor(private guitar?: Guitar) {}
+
+  play() {
+    console.log('Rana is', this.guitar!.play());
+  }
+}
+
+new Rana().play(); // Rana is playing guitar

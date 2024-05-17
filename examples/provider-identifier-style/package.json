@@ -1,5 +1,5 @@
 {
-  "name": "@youmiya-examples/decorator-style-with-metadata",
+  "name": "@youmiya-examples/provider-identifier-style",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
