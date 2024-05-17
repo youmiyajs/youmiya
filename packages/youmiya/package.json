@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@youmiya/core": "workspace:*",
-    "@youmiya/modular": "workspace:*"
+    "@youmiya/modular": "workspace:*",
+    "@youmiya/functional": "workspace:*"
   },
   "peerDependencies": {},
   "devDependencies": {
