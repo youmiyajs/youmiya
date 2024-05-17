@@ -126,6 +126,9 @@ importers:
       '@youmiya/core':
         specifier: workspace:*
         version: link:../core
+      '@youmiya/modular':
+        specifier: workspace:*
+        version: link:../modular
     devDependencies:
       '@modern-js/eslint-config':
         specifier: 2.49.3

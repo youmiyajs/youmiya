@@ -20,7 +20,8 @@
     "upgrade": "modern upgrade"
   },
   "dependencies": {
-    "@youmiya/core": "workspace:*"
+    "@youmiya/core": "workspace:*",
+    "@youmiya/modular": "workspace:*"
   },
   "peerDependencies": {},
   "devDependencies": {
