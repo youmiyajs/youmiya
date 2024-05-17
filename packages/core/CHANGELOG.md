@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.8
+
+### Patch Changes
+
+- Export container types
+
 ## 0.1.7
 
 ### Patch Changes
