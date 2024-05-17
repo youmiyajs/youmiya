@@ -1,5 +1,13 @@
 # youmiya
 
+## 0.1.11
+
+### Patch Changes
+
+- 7236259: Add functional API support
+- Updated dependencies [7236259]
+  - @youmiya/functional@0.1.1
+
 ## 0.1.10
 
 ### Patch Changes
