@@ -1,4 +1,5 @@
 export { createProviderIdentifier } from './createProviderIdentifier';
+export { autoInject } from './autoInject';
 export { inject } from './inject';
 export { injectable } from './injectable';
 export { multiple } from './multiple';

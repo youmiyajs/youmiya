@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import 'reflect-metadata';
-import { inject, injectable, optional } from '@/decorators';
+import { autoInject, inject, injectable, optional } from '@/decorators';
 import { rootContainer } from '@/containers';
 import { InjectionTokenInvalidError } from '@/common';
 
@@ -81,5 +81,29 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
         @inject() public a: undefined;
       }
     }).toThrowError(InjectionTokenInvalidError);
+  });
+
+
+  it('@autoInject(): should correctly return a auto resolve class', () => {
+    class A {}
+    class B {}
+    class C {}
+
+    @autoInject()
+    class Foo {
+      constructor(
+        public foo: number,
+        public a?: A,
+        public b?: B,
+        public c?: C,
+      ) {}
+    }
+
+    const foo = new Foo(1);
+
+    expect(foo.foo).toBe(1);
+    expect(foo.a).toBeInstanceOf(A);
+    expect(foo.b).toBeInstanceOf(B);
+    expect(foo.c).toBeInstanceOf(C);
   });
 });

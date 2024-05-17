@@ -1,9 +1,17 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { Container, createProviderIdentifier, inject, injectable, multiple, optional, rootContainer } from '../src';
-import { NoProviderFoundError } from '@/common';
+import {
+  autoInject,
+  createProviderIdentifier,
+  inject,
+  injectable,
+  multiple,
+  optional,
+  rootContainer,
+} from '../src';
+import { NoProviderFoundError, NoReflectMetadataSupportError } from '@/common';
 
-describe('[Decorator] test util decorators', () => {
+describe('[Decorator] test decorators', () => {
   beforeEach(() => rootContainer.dispose(true));
 
   it('test createProviderIdentifier()', () => {
@@ -60,8 +68,10 @@ describe('[Decorator] test util decorators', () => {
   });
 
   it('test multiple(): should returns an array of multiple instances', () => {
-    @injectable({ token: 'Foo' }) class A {}
-    @injectable({ token: 'Foo' }) class B {}
+    @injectable({ token: 'Foo' })
+    class A {}
+    @injectable({ token: 'Foo' })
+    class B {}
 
     class C {
       constructor(
@@ -82,12 +92,8 @@ describe('[Decorator] test util decorators', () => {
     expect(c.foo1[0]).toBeInstanceOf(A);
     expect(c.foo1[1]).toBeInstanceOf(B);
   });
-});
 
-describe('[Decorator] test inject()', () => {
-  beforeEach(() => rootContainer.dispose(true));
-
-  it('should inject the correct provider', () => {
+  it('test inject(): should inject the correct provider', () => {
     interface IA {
       a: () => number;
     }
@@ -107,5 +113,16 @@ describe('[Decorator] test inject()', () => {
     }
 
     expect(rootContainer.resolve(B).b()).toBe(2);
+  });
+
+  it('test autoInject(): should throw NoReflectMetadataSupportError when use in no reflect-metadata polyfill env', () => {
+    expect(() => {
+          @autoInject()
+          class Foo {
+            constructor(
+              public foo: number,
+            ) {}
+          }
+    }).toThrowError(NoReflectMetadataSupportError);
   });
 });

@@ -6,13 +6,13 @@ import {
   hasReflectMetadata,
 } from '@/utils';
 
-export function injectable(
-  options?: ProviderOptions & {
-    token?: InjectionTokenType<unknown>;
-    container?: IContainer;
-    defaultProps?: any[];
-  },
-) {
+export type InjectableOptions = ProviderOptions & {
+  token?: InjectionTokenType<unknown>;
+  container?: IContainer | false;
+  defaultProps?: any[];
+};
+
+export function injectable(options?: InjectableOptions) {
   const { token, container = rootContainer, ...restOptions } = options ?? {};
 
   return function <T>(target: Constructor<T>) {
@@ -28,6 +28,8 @@ export function injectable(
       });
     }
 
-    container.register(token || target).toClass(target, restOptions);
+    if (container !== false) {
+      container.register(token || target).toClass(target, restOptions);
+    }
   };
 }
