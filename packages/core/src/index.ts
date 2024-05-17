@@ -1,17 +1,18 @@
 export {
-  // injection token
   InjectionToken,
-  // errors
-  UnsupportedProviderError,
-  NoReflectMetadataSupportError,
-  InjectionTokenInvalidError,
-} from './common';
+  isProviderIdentifier,
+  type InjectionTokenType,
+  type ProviderIdentifier,
+} from './common/InjectionToken';
 
-// types
-export type { InjectionTokenType } from './common';
+export * from './common/error';
+
 export type { AsyncModule } from './modules';
 
-export * from './containers';
+export { Container, rootContainer } from './containers';
+
 export * from './decorators';
+
 export * from './interceptors/types';
+
 export * from './providers';

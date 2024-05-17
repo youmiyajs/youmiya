@@ -1,4 +1,4 @@
-import { ResolutionSource } from '..';
+import { ResolutionSource } from '../containers';
 import { InjectionTokenType } from './InjectionToken';
 
 export class UnsupportedProviderError extends Error {
