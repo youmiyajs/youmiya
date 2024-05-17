@@ -10,7 +10,7 @@
     "bump": "modern bump",
     "prepare": "husky install",
     "change-status": "modern change-status",
-    "release": "modern release",
+    "release": "pnpm build && modern release",
     "lint": "modern lint",
     "upgrade": "modern upgrade",
     "nx": "nx"

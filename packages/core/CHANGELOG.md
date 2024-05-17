@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.7
+
+### Patch Changes
+
+- Export error types
+
 ## 0.1.6
 
 ### Patch Changes
