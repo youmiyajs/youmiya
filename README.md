@@ -1,7 +1,5 @@
 # 🍫 Youmiya
 
-> ⚠️ Warning: This project is experimental now and still under construction.
-
 `Youmiya` is a simple dependency injection (DI) library for Typescript with modern features:
 
 - Supports both decorator style and interface-oriented style
