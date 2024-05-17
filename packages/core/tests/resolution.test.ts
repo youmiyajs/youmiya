@@ -29,7 +29,9 @@ describe('[Basic] test register & resolution features', () => {
     expect(rootContainer.resolve('B')).toBe(B);
     expect(rootContainer.resolve('C')).toBe(C);
     expect(rootContainer.resolve('D')).toBeInstanceOf(A);
-    expect(rootContainer.resolve<AsyncModule<A>>('E')()).toBeInstanceOf(Promise);
+    expect(rootContainer.resolve<AsyncModule<A>>('E')()).toBeInstanceOf(
+      Promise,
+    );
   });
 
   it('should resolve and instantiate classes correctly', () => {
@@ -101,12 +103,14 @@ describe('[Basic] test register & resolution features', () => {
 
   it('should returns a lazy instance when resolve is set to lazy', () => {
     let counter = 0;
-    @injectable() class A {
+    @injectable()
+    class A {
       constructor() {
         counter++;
       }
     }
-    @injectable() class B {
+    @injectable()
+    class B {
       constructor(@inject(A, { lazy: true }) public a: A) {}
     }
 
@@ -128,7 +132,9 @@ describe('[Basic] test register & resolution features', () => {
   it('should invoke correct registration if registered multiple providers', () => {
     const unregister1 = rootContainer.register('A').toValue(1);
     const unregister2 = rootContainer.register('A').toValue(2);
-    expect(rootContainer.resolve('A', { multiple: true })).toStrictEqual([1, 2]);
+    expect(rootContainer.resolve('A', { multiple: true })).toStrictEqual([
+      1, 2,
+    ]);
     unregister2();
     expect(rootContainer.resolve('A')).toBe(1);
     unregister1();
@@ -154,26 +160,57 @@ describe('[Basic] test register & resolution features', () => {
   });
 
   it('should cache singleton even if context.useCache is false', () => {
-    @injectable() class A {}
+    @injectable()
+    class A {}
     const a1 = rootContainer.resolve(A, { useCache: false });
     const a2 = rootContainer.resolve(A);
     expect(a1).toBe(a2);
 
-    @injectable({ singleton: SingletonScope.Scoped }) class B {}
+    @injectable({ singleton: SingletonScope.Scoped })
+    class B {}
     const b1 = rootContainer.resolve(B, { useCache: false });
     const b2 = rootContainer.resolve(B);
     expect(b1).toBe(b2);
   });
 
-  it('should prefer to resolve from provider in context', () => {
+  it('should prefer to resolve from `prefers` in context', () => {
     class A {}
     class B {}
     rootContainer.register('A').toClass(A);
 
     const overrideMap = new Map();
     overrideMap.set('A', [{ provider: { useClass: B } }]);
-    const a = rootContainer.resolve('A', { provide: overrideMap });
+    const a = rootContainer.resolve('A', { prefers: overrideMap });
 
     expect(a).toBeInstanceOf(B);
+  });
+
+  it('should resolve from alternative if current container has no registration', () => {
+    class A {}
+    class B {}
+
+    const overrideMap = new Map();
+    overrideMap.set('A', [{ provider: { useClass: B } }]);
+    const a = rootContainer.resolve('A', { alternative: overrideMap });
+    expect(a).toBeInstanceOf(B);
+
+    rootContainer.dispose();
+
+    rootContainer.register('A').toClass(A);
+    expect(
+      rootContainer.resolve('A', { alternative: overrideMap }),
+    ).toBeInstanceOf(A);
+  });
+
+  it('should return readonly registrations when called container.getRegistration()', () => {
+    class A {}
+    class B {}
+    rootContainer.register('foo').toClass(A);
+    rootContainer.register('foo').toClass(B);
+    expect(rootContainer.getRegistration('foo')).toStrictEqual([
+      { options: {}, provider: { defaultProps: undefined, useClass: A } },
+      { options: {}, provider: { defaultProps: undefined, useClass: B } }
+    ]);
+    expect(rootContainer.getRegistration('bar')).toBeFalsy();
   });
 });

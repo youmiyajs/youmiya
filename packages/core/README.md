@@ -1,6 +1,6 @@
 # 🍫 Youmiya
 
-> ⚠️ Warning: This project is experimental now and still under construction.
+![build-and-test-badge](https://github.com/youmiyajs/youmiya/actions/workflows/build-and-test.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/youmiyajs/youmiya/badge.svg?branch=main)](https://coveralls.io/github/youmiyajs/youmiya?branch=main)
 
 `Youmiya` is a simple dependency injection (DI) library for Typescript with modern features:
 
@@ -11,6 +11,7 @@
 - Supports hierarchical containers
 - Circular dependency detection & workaround
 - Register / resolution interceptors
+- 100% code coverage
 
 And more features are on the way:
 
@@ -20,32 +21,42 @@ And more features are on the way:
 
 ## Getting Started
 
-### Basic Usage (decorator style)
+Youmiya supports 3 styles for dependency injection, you can refer to the following example project to see how it works.
 
-`reflect-metadata` polyfill is needed for decorator style.
+- [Decorator style (with reflect-metadata)](https://github.com/youmiyajs/youmiya/blob/main/examples/decorator-style-with-reflect-metadata/src/index.ts)
+- [Decorator style (without reflect-metadata)](https://github.com/youmiyajs/youmiya/blob/main/examples/decorator-style-without-reflect-metadata/src/index.ts)
+- [Provider identifier style (reflect-metadata is not needed)](https://github.com/youmiyajs/youmiya/blob/main/examples/provider-identifier-style/src/index.ts)
+
+### Basic Usage (decorator metadata style)
+
+`reflect-metadata` polyfill is needed for this style.
 
 ```ts
-import { injectable, inject, rootContainer } from 'youmiya';
+// First imports youmiya and `reflect-metadata`.
+import 'reflect-metadata';
+import { injectable, rootContainer, autoInject } from 'youmiya';
 
+// Then we define a class `Guitar` and mark it as `injectable`.
 @injectable()
-class Foo {
-  echo() {
-    console.log('foo');
+class Guitar {
+  play() {
+    return 'playing guitar';
   }
 }
 
-@injectable()
-class Bar {
-  constructor(@inject() private readonly foo: Foo) {}
+// We're gonna to create a class `Anon` that plays Guitar.
+// Constructing `Guitar` manually is not required because `Guitar` is injectable and `Anon` is `autoInject()` decorated.
+@autoInject()
+class Anon {
+  constructor(private guitar?: Guitar) {}
 
-  echo() {
-    this.foo.echo();
-    console.log('bar');
+  play() {
+    console.log('Anon is', this.guitar!.play());
   }
 }
 
-const bar = rootContainer.resolve(Bar);
-bar.echo(); // foobar
+// Let's play Haruhikage!
+(new Anon()).play(); // Anon is playing guitar
 ```
 
 ### Basic Usage (interface-oriented style)

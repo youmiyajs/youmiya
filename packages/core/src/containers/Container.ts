@@ -14,6 +14,7 @@ import {
   isDisposable,
   isGlobalSingleton,
   isScopedSingleton,
+  unwrapInjectionToken,
 } from '@/utils';
 import {
   Constructor,
@@ -21,9 +22,7 @@ import {
   InjectionTokenType,
   NoProviderFoundError,
   UnsupportedProviderError,
-  DECORATOR_BIND_TOKEN,
   ProviderIdentifier,
-  isProviderIdentifier,
   CircularDependencyDetectedError,
 } from '@/common';
 import {
@@ -122,7 +121,7 @@ export class Container implements IContainer {
     if (!token) {
       throw new InjectionTokenInvalidError(token);
     }
-    const registerToken = this.unwrapInjectionToken(token);
+    const registerToken = unwrapInjectionToken(token);
 
     const registration: ProviderRegistration<T> = {
       provider,
@@ -187,7 +186,7 @@ export class Container implements IContainer {
     token: InjectionTokenType<T>,
     options?: ResolutionOptions<Optional, Multiple>,
   ): any {
-    const unwrappedToken = this.unwrapInjectionToken(token);
+    const unwrappedToken = unwrapInjectionToken(token);
 
     const context: ResolutionContext = {
       container: this,
@@ -220,11 +219,10 @@ export class Container implements IContainer {
     }
   }
 
-  private unwrapInjectionToken<T>(token: InjectionTokenType<T>) {
-    if (isProviderIdentifier(token)) {
-      return token[DECORATOR_BIND_TOKEN];
-    }
-    return token;
+  public getRegistration<T>(
+    token: InjectionTokenType<T>,
+  ): readonly ProviderRegistration<T>[] | undefined {
+    return this.registration.get(token) || undefined;
   }
 
   private resolveImpl<T>(
@@ -240,8 +238,9 @@ export class Container implements IContainer {
 
     // get registrations in this container
     const registrations =
-      (context.provide?.get(token) as ProviderRegistration<T>[]) ||
-      this.registration.get(token);
+      (context.prefers?.get(token) as ProviderRegistration<T>[]) ||
+      this.registration.get(token) ||
+      (context.alternative?.get(token) as ProviderRegistration<T>[]);
 
     if (!registrations?.length) {
       // if this container has no resolution, recursively get in parent container
