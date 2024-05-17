@@ -21,6 +21,12 @@ And more features are on the way:
 
 ## Getting Started
 
+Youmiya supports 3 styles for dependency injection, you can refer to the following example project to see how it works.
+
+- [Decorator style (with reflect-metadata)](https://github.com/youmiyajs/youmiya/blob/main/examples/decorator-style-with-reflect-metadata/src/index.ts)
+- [Decorator style (without reflect-metadata)](https://github.com/youmiyajs/youmiya/blob/main/examples/decorator-style-without-reflect-metadata/src/index.ts)
+- [Provider identifier style (reflect-metadata is not needed)](https://github.com/youmiyajs/youmiya/blob/main/examples/provider-identifier-style/src/index.ts)
+
 ### Basic Usage (decorator metadata style)
 
 `reflect-metadata` polyfill is needed for this style.
