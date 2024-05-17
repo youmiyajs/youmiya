@@ -27,7 +27,8 @@
     "new": "modern new",
     "upgrade": "modern upgrade",
     "test": "vitest -c config/vitest.config.mts",
-    "test:run": "vitest run -c config/vitest.config.mts --coverage"
+    "test:run": "vitest run -c config/vitest.config.mts --coverage",
+    "report:coverage": "cat coverage/lcov.info | coveralls"
   },
   "eslintIgnore": [
     "node_modules/",

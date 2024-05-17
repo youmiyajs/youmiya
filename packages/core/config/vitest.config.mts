@@ -8,7 +8,8 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: 'v8',
-      include: ['src/**/*']
+      include: ['src/**/*'],
+      reporter: ['text', 'json', 'html', 'lcovonly']
     }
   },
   plugins: [

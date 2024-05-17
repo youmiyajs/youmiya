@@ -20,6 +20,9 @@ importers:
       '@modern-js/tsconfig':
         specifier: 2.49.3
         version: 2.49.3
+      coveralls-next:
+        specifier: ^4.2.1
+        version: 4.2.1
       husky:
         specifier: ^8.0.0
         version: 8.0.3
@@ -43,6 +46,16 @@ importers:
         version: 5.0.4
 
   examples/decorator-style:
+    dependencies:
+      '@youmiya/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+
+  examples/decorator-style-with-reflect-metadata:
     dependencies:
       '@youmiya/core':
         specifier: workspace:*
@@ -2360,6 +2373,11 @@ packages:
   core-js@3.36.1:
     resolution: {integrity: sha512-BTvUrwxVBezj5SZ3f10ImnX2oRByMxql3EimVqMysepbC9EeMUOpLwdy6Eoili2x6E4kf+ZUB5k/+Jv55alPfA==}
 
+  coveralls-next@4.2.1:
+    resolution: {integrity: sha512-O/SBGZsCryt+6Q3NuJHENyQYaucTEV9qp0KGaed+y42PUh+GuF949LRLHKZbxWwOIc1tV8bJRIVWlfbZ8etEwQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+
   cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
 
@@ -3310,6 +3328,10 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
+  lcov-parse@1.0.0:
+    resolution: {integrity: sha512-aprLII/vPzuQvYZnDRU78Fns9I2Ag3gi4Ipga/hxnVMCZC8DnR2nI7XBqrPoywGfxqIx/DgarGvDJZAD3YBTgQ==}
+    hasBin: true
+
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
@@ -3388,6 +3410,10 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  log-driver@1.2.7:
+    resolution: {integrity: sha512-U7KCmLdqsGHBLeWqYlFA0V0Sl6P08EE1ZrmA9cxjUE0WVqT9qnyVDPz1kzpFEP0jdJuFnasWIfSd7fsaNXkpbg==}
+    engines: {node: '>=0.8.6'}
 
   log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -7083,6 +7109,14 @@ snapshots:
 
   core-js@3.36.1: {}
 
+  coveralls-next@4.2.1:
+    dependencies:
+      form-data: 4.0.0
+      js-yaml: 4.1.0
+      lcov-parse: 1.0.0
+      log-driver: 1.2.7
+      minimist: 1.2.8
+
   cross-spawn@5.1.0:
     dependencies:
       lru-cache: 4.1.5
@@ -8151,6 +8185,8 @@ snapshots:
 
   kleur@4.1.5: {}
 
+  lcov-parse@1.0.0: {}
+
   levn@0.4.1:
     dependencies:
       prelude-ls: 1.2.1
@@ -8235,6 +8271,8 @@ snapshots:
   lodash.upperfirst@4.3.1: {}
 
   lodash@4.17.21: {}
+
+  log-driver@1.2.7: {}
 
   log-symbols@4.1.0:
     dependencies:

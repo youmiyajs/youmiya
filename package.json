@@ -4,6 +4,7 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test:run",
+    "report:coverage": "nx run-many -t report:coverage",
     "new": "modern new",
     "reset": "modern clear",
     "change": "modern change",
@@ -24,14 +25,15 @@
     ]
   },
   "devDependencies": {
-    "@modern-js/monorepo-tools": "2.49.3",
-    "@modern-js/eslint-config": "2.49.3",
-    "@modern-js/tsconfig": "2.49.3",
     "@modern-js-app/eslint-config": "2.49.3",
-    "lint-staged": "~13.1.0",
-    "prettier": "^2.6.2",
+    "@modern-js/eslint-config": "2.49.3",
+    "@modern-js/monorepo-tools": "2.49.3",
+    "@modern-js/tsconfig": "2.49.3",
+    "coveralls-next": "^4.2.1",
     "husky": "^8.0.0",
+    "lint-staged": "~13.1.0",
     "nx": "19.0.3",
+    "prettier": "^2.6.2",
     "rimraf": "~3.0.2",
     "tsx": "^4.10.2",
     "typescript": "~5.0.4"

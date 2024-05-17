@@ -19,6 +19,9 @@
       "dependsOn": ["build"],
       "outputs": ["{projectRoot}/coverage"],
       "cache": true
+    },
+    "report:coverage": {
+      "dependsOn": ["test:run"]
     }
   },
   "defaultBase": "main"
