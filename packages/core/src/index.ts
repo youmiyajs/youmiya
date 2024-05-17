@@ -9,7 +9,7 @@ export * from './common/error';
 
 export type { AsyncModule } from './modules';
 
-export { Container, rootContainer } from './containers';
+export * from './containers';
 
 export * from './decorators';
 
