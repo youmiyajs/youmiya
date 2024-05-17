@@ -53,7 +53,7 @@ class Rana implements IGuitar {
 }
 class Taki implements IDrummer {
   playTheDrum() {
-    console.log('Taki is playing the drum');
+    console.log('Taki is playing the drum.');
   }
 }
 
@@ -91,5 +91,5 @@ mygo.live();
 // Soyo is playing the bass.
 // Anon is playing the guitar.
 // Rana is playing the guitar.
-// Taki is playing the drum
+// Taki is playing the drum.
 // Tomori is singing.
