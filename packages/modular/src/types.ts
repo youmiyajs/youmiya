@@ -7,7 +7,7 @@ import {
   ResolutionOptions,
 } from '@youmiya/core';
 
-export type Constructor<T> = new (...args: unknown[]) => T;
+export type Constructor<T> = new (...args: any[]) => T;
 
 export const __MODULE_CONTEXT_SYMBOL__ = Symbol.for('MODULE_CONTEXT');
 
@@ -21,10 +21,13 @@ export type ModuleResolutionContext<
   Multiple extends boolean = boolean,
   Async extends boolean = boolean,
 > = ResolutionOptions<Optional, Multiple, Async> & {
-  sourceModule: IModuleContext;
+  sourceModule?: IModuleContext;
+  rootToken?: InjectionTokenType<any>;
 };
 
 export interface IModuleContext {
+  readonly name: string;
+
   get<T>(
     token: InjectionTokenType<T>,
     options?: ModuleResolutionContext<false, false, false>,

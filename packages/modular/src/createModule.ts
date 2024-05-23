@@ -15,3 +15,7 @@ export function createModule<T>(
     configurable: false,
   });
 }
+
+export function getModuleContextFromCtor(ctor: Constructor<any>) {
+  return (ctor as any)[__MODULE_CONTEXT_SYMBOL__] as Module;
+}
