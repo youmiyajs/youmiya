@@ -1,6 +1,7 @@
 import {
   AsyncModule,
   IContainer,
+  InjectionToken,
   InjectionTokenType,
   NoProviderFoundError,
   rootContainer,
@@ -9,6 +10,8 @@ import {
 import { IModuleContext, ModuleProps, ModuleResolutionContext } from './types';
 
 export class Module implements IModuleContext {
+  public readonly name: string;
+
   private container: IContainer;
 
   private exportsSet: Set<InjectionTokenType<unknown>> = new Set();
@@ -18,6 +21,8 @@ export class Module implements IModuleContext {
   constructor(moduleProps: ModuleProps) {
     this.container = rootContainer.fork(`MODULE_${moduleProps.name}_CONTAINER`);
     this.container.register(Module).toValue(this);
+
+    this.name = moduleProps.name;
 
     moduleProps.provides.forEach(provider => {
       const { provide, options, ...rest } = provider;
@@ -68,19 +73,42 @@ export class Module implements IModuleContext {
     token: InjectionTokenType<T>,
     options?: ModuleResolutionContext,
   ): T | T[] | AsyncModule<T> | AsyncModule<T>[] | undefined {
-    return this.getImpl(token, {
-      ...options,
-      sourceModule: options?.sourceModule ?? this,
-      alternative: {
-        get: this.getRegistration.bind(this),
-      },
-    });
+    try {
+      const rootToken = options?.rootToken ?? token;
+      return this.getImpl(token, {
+        ...options,
+        rootToken,
+        sourceModule: options?.sourceModule ?? this,
+        alternative: {
+          get: this.getRegistrationImpl.bind(
+            this,
+            rootToken,
+          ) as IModuleContext['getRegistration'],
+        },
+      });
+    } catch (err) {
+      if (err instanceof NoProviderFoundError && options?.optional) {
+        return undefined;
+      }
+      throw err;
+    }
   }
 
   getRegistration<T>(_token: InjectionTokenType<T>) {
+    return this.getRegistrationImpl(undefined, _token);
+  }
+
+  private getRegistrationImpl<T>(
+    rootToken: InjectionTokenType<any> | undefined,
+    _token: InjectionTokenType<T>,
+  ) {
     const token = unwrapInjectionToken(_token);
+
     if (this.exportsSet.has(token)) {
       return this.container.getRegistration(token);
+    }
+    if (token === rootToken) {
+      return undefined;
     }
     for (const module of this.imports) {
       const maybeResult = module.getRegistration(token);
@@ -100,11 +128,15 @@ export class Module implements IModuleContext {
       if (!this.exportsSet.has(token)) {
         throw new NoProviderFoundError(token);
       }
-      return this.container.resolve(token, context);
+      const { rootToken: _rootToken, ...rest } = context;
+      return this.container.resolve(token, rest);
     }
 
     try {
-      return this.container.resolve(token, context);
+      return this.container.resolve(token, {
+        ...context,
+        optional: false,
+      });
     } catch (err) {
       if (err instanceof NoProviderFoundError) {
         return this.getFromImportedModules(token, context);
@@ -113,13 +145,21 @@ export class Module implements IModuleContext {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  unsafe_getModuleContainer() {
+    return this.container;
+  }
+
   private getFromImportedModules<T>(
     token: InjectionTokenType<T>,
     context: ModuleResolutionContext,
   ) {
     for (const module of this.imports) {
       try {
-        return module.get(token, context);
+        return module.get(token, {
+          ...context,
+          rootToken: new InjectionToken(''),
+        });
       } catch (err) {
         if (err instanceof NoProviderFoundError) {
           continue;

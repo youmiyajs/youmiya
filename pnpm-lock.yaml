@@ -110,6 +110,9 @@ importers:
       '@youmiya/core':
         specifier: workspace:*
         version: link:../core
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
 
   packages/react:
     optionalDependencies:

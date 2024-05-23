@@ -18,7 +18,8 @@
     "dist"
   ],
   "devDependencies": {
-    "@youmiya/core": "workspace:*"
+    "@youmiya/core": "workspace:*",
+    "reflect-metadata": "^0.2.2"
   },
   "peerDependencies": {
     "@youmiya/core": "workspace:*"
