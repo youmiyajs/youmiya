@@ -8,7 +8,8 @@
     "build": "modern build",
     "build:watch": "modern build -w",
     "new": "modern new",
-    "upgrade": "modern upgrade"
+    "test": "vitest -c config/vitest.config.mts",
+    "test:run": "vitest run -c config/vitest.config.mts --coverage"
   },
   "dependencies": {},
   "peerDependencies": {
