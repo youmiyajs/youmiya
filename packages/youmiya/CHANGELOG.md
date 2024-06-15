@@ -1,5 +1,15 @@
 # youmiya
 
+## 0.1.12
+
+### Patch Changes
+
+- 8aa0065: Fix @injectable() conflicts with @inject()
+- Updated dependencies [8aa0065]
+  - @youmiya/core@0.1.11
+  - @youmiya/functional@0.1.2
+  - @youmiya/modular@0.1.2
+
 ## 0.1.11
 
 ### Patch Changes
