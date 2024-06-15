@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import 'reflect-metadata';
 import { autoInject, inject, injectable, optional } from '@/decorators';
 import { rootContainer } from '@/containers';
-import { InjectionTokenInvalidError } from '@/common';
+import { InjectionToken, InjectionTokenInvalidError } from '@/common';
 
 describe('[Metadata] test scenes that requires reflect-metadata polyfill', () => {
   beforeEach(() => {
@@ -83,7 +83,6 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
     }).toThrowError(InjectionTokenInvalidError);
   });
 
-
   it('@autoInject(): should correctly return a auto resolve class', () => {
     class A {}
     class B {}
@@ -105,5 +104,36 @@ describe('[Metadata] test scenes that requires reflect-metadata polyfill', () =>
     expect(foo.a).toBeInstanceOf(A);
     expect(foo.b).toBeInstanceOf(B);
     expect(foo.c).toBeInstanceOf(C);
+  });
+
+  it('for binding dependency, inject() should have higher priority than injectable()', () => {
+    @injectable()
+    class A {}
+
+    const a = new A();
+    const aFactory = () => a;
+    rootContainer.register('a').toFactory(aFactory);
+
+    @injectable()
+    class B {
+      constructor(@inject('a') public readonly a: A) {}
+    }
+
+    expect(rootContainer.resolve(B).a).toBe(a);
+
+    const tokenA = new InjectionToken('A');
+    rootContainer.register(tokenA).toFactory(aFactory);
+
+    @injectable()
+    class C {
+      constructor(
+        @inject(tokenA) public readonly a: unknown,
+        @inject('a') public readonly c: A,
+      ) {}
+    }
+
+    const c = rootContainer.resolve(C);
+    expect(c.a).toBe(a);
+    expect(c.c).toBe(a);
   });
 });

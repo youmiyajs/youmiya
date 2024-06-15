@@ -39,7 +39,10 @@ export function defineConstructorDependencyDescriptor(
   descriptor: ConstructorDependencyDescriptor<unknown>,
 ) {
   const descriptorSet = getClassDescriptorsSet(clazz);
-  descriptorSet.constructors.push(descriptor);
+  if (descriptorSet.constructors[descriptor.index]) {
+    return;
+  }
+  descriptorSet.constructors[descriptor.index] = descriptor;
 }
 
 export function definePropertyDependencyDescriptor(

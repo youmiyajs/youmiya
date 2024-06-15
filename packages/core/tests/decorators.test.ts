@@ -9,7 +9,7 @@ import {
   optional,
   rootContainer,
 } from '../src';
-import { NoProviderFoundError, NoReflectMetadataSupportError } from '@/common';
+import { InjectionToken, NoProviderFoundError, NoReflectMetadataSupportError } from '@/common';
 
 describe('[Decorator] test decorators', () => {
   beforeEach(() => rootContainer.dispose(true));
