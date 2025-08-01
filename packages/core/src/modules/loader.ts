@@ -1,6 +1,6 @@
 const MODULE_LOADER_TYPE_SYMBOL = Symbol.for('MODULE_LOADER_TYPE');
 
-export const enum ModuleLoaderType {
+export enum ModuleLoaderType {
   LazyModule,
   AsyncModule,
 }

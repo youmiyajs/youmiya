@@ -6,7 +6,7 @@ import {
 import { IProvider, ProviderOptions } from '@/providers';
 import { InjectionTokenType } from '@/common';
 
-export const enum InterceptorEvents {
+export enum InterceptorEvents {
   BeforeRegister = 'before:register',
   AfterRegister = 'after:register',
   BeforeResolve = 'before:resolve',
