@@ -1,5 +1,12 @@
 # @youmiya/functional
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [f197398]
+  - @youmiya/core@0.1.12
+
 ## 0.1.2
 
 ### Patch Changes

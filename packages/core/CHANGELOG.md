@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.12
+
+### Patch Changes
+
+- f197398: remove const for enum exports
+
 ## 0.1.11
 
 ### Patch Changes
