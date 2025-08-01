@@ -1,5 +1,12 @@
 # @youmiya/example-decorator-style
 
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [f197398]
+  - @youmiya/core@0.1.12
+
 ## 1.0.3
 
 ### Patch Changes
