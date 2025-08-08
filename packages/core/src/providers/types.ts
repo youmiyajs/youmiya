@@ -46,6 +46,7 @@ export enum ProviderTypeEnum {
 export enum SingletonScope {
   Global = 'global',
   Scoped = 'scoped',
+  Transient = 'transient',
 }
 
 export interface ProviderOptions {
@@ -55,7 +56,7 @@ export interface ProviderOptions {
    *
    * - `SingletonScope.Global`: The instance will be cached for current container and all child containers.
    * - `SingletonScope.Scoped`: The instance will be cached for current container. Resolution from child containers will be recreated.
-   * - `false`: The instance will be recreated in every resolution.
+   * - `SingletionScope.Transient` or `false`: The instance will be recreated in every resolution.
    *
    * @default SingletonScope.Global
    */
@@ -71,6 +72,8 @@ export interface ProviderOptions {
 
   /**
    * Specify the provider should replace the existing registration for given token.
+   *
+   * @default false
    */
   replace?: boolean;
 }

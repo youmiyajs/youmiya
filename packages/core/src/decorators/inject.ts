@@ -6,6 +6,11 @@ import {
   definePropertyDependencyDescriptor,
 } from '@/utils';
 
+/**
+ * `@inject(token?, options?)`: a constructor params decorator or property
+ * decorator that explicitly specifiy a parameter or class property that should
+ * be injected with given token (or inferred from type metadata).
+ */
 export function inject<T>(
   token?: InjectionTokenType<T>,
   options?: ResolutionOptions,
