@@ -1,5 +1,11 @@
 # @youmiya/core
 
+## 0.1.13
+
+### Patch Changes
+
+- d63f247: Distinguish resolutions and registrations in AfterResolve interceptor
+
 ## 0.1.12
 
 ### Patch Changes

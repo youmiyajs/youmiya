@@ -1,5 +1,13 @@
 # @youmiya/modular
 
+## 0.1.4
+
+### Patch Changes
+
+- d63f247: Distinguish resolutions and registrations in AfterResolve interceptor
+- Updated dependencies [d63f247]
+  - @youmiya/core@0.1.13
+
 ## 0.1.3
 
 ### Patch Changes

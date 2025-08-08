@@ -1,5 +1,12 @@
 # @youmiya-examples/decorator-style-without-metadata
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [d63f247]
+  - @youmiya/core@0.1.13
+
 ## 1.0.4
 
 ### Patch Changes
