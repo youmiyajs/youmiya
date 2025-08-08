@@ -7,6 +7,8 @@ export {
 
 export * from './common/error';
 
+export type { IDisposable } from './common/types';
+
 export type { AsyncModule } from './modules';
 
 export * from './containers';

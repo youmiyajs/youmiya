@@ -46,7 +46,8 @@ export type BeforeResolveInterceptor<T> = (
 ) => Partial<BeforeResolvePayload<T>> | void;
 
 export interface AfterResolvePayload<T> extends BeforeResolvePayload<T> {
-  readonly resolution?: ProviderRegistration<T>[];
+  readonly registrations?: ProviderRegistration<T>[];
+  readonly resolutions?: T | T[] | undefined;
 }
 
 export type AfterResolveInterceptor<T> = (

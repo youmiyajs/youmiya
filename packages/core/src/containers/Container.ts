@@ -242,15 +242,16 @@ export class Container implements IContainer {
       this.registration.get(token) ||
       (context.alternative?.get(token) as ProviderRegistration<T>[]);
 
+    let resolutions: any;
+
     if (!registrations?.length) {
       // if this container has no resolution, recursively get in parent container
       if (context.resolveParent && this.parentContainer) {
-        return this.parentContainer.resolve(token, context); // TODO: remove any here
+        resolutions = this.parentContainer.resolve(token, context);
       }
-
       // if this token itself is a constructor, use itself as class provider
-      if (isConstructor(token) && context.rootToken === token) {
-        return this.resolveFromRegistrations(
+      else if (isConstructor(token) && context.rootToken === token) {
+        resolutions = this.resolveFromRegistrations(
           token,
           [
             {
@@ -259,24 +260,31 @@ export class Container implements IContainer {
             },
           ],
           context,
-        );
+        ) as T;
       }
-
       // if accepts optional, return null
-      if (context.optional) {
-        return undefined;
+      else if (context.optional) {
+        resolutions = undefined;
+      } else {
+        throw new NoProviderFoundError(token);
       }
-      throw new NoProviderFoundError(token);
+    } else {
+      resolutions = this.resolveFromRegistrations(
+        token,
+        registrations,
+        context,
+      );
     }
 
     this.interceptorRegistry.dispatch<T>(InterceptorEvents.AfterResolve, {
       token,
       context,
-      resolution: registrations,
+      registrations,
+      resolutions,
       container: this,
     });
 
-    return this.resolveFromRegistrations(token, registrations, context);
+    return resolutions;
   }
 
   private resolveFromRegistrations<T>(
@@ -316,7 +324,7 @@ export class Container implements IContainer {
         (isClassProvider && isSingletonProvider));
 
     if (shouldUseCache && cachedInstance) {
-      return cachedInstance;
+      return cachedInstance as T;
     }
 
     return this.resolveProvider(token, registration, context);

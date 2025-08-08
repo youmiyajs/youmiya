@@ -25,11 +25,12 @@
     ]
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.1.4",
     "@modern-js-app/eslint-config": "2.49.3",
     "@modern-js/eslint-config": "2.49.3",
+    "@modern-js/module-tools": "2.49.2",
     "@modern-js/monorepo-tools": "2.49.3",
     "@modern-js/tsconfig": "2.49.3",
-    "@modern-js/module-tools": "2.49.2",
     "@types/node": "^18.0.0",
     "@vitest/coverage-v8": "^1.6.0",
     "coveralls-next": "^4.2.1",

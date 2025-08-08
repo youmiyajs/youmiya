@@ -12,6 +12,10 @@ export type InjectableOptions = ProviderOptions & {
   defaultProps?: any[];
 };
 
+/**
+ * `@injectable`: A class decorator to mark a class as "injectable".
+ * By default, the class will be registered to current context container.
+ */
 export function injectable(options?: InjectableOptions) {
   const { token, container = rootContainer, ...restOptions } = options ?? {};
 
